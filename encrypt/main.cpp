@@ -12,6 +12,11 @@ std::string rsa_n = "96165402670130584772537629772934250633792434584735938169004
 std::string rsa_e = "65537";
 std::string rsa_d = "4802033916387221748426181350914821072434641827090144975386182740274856853318276518446521844642275539818092186650425384826827514552122318308590929813048801";
 
+bool Bignum::OPT1 = false;
+bool Bignum::OPT2 = false;
+bool Bignum::OPT3 = false;
+bool Bignum::OPT4 = false;
+
 bool is_digit(const char value) { return std::isdigit(value); }
 bool is_numeric(const std::string& value) { return std::all_of(value.begin(), value.end(), is_digit); }
 
@@ -54,32 +59,46 @@ std::string to_chars(Bignum to_numeric)
 int main(int argc, char **argv)
 {
 	std::string op;
+	std::string opt;
 	std::string num1;
 	std::string num2;
 	std::string num3;
-	if(argc != 4 && (argc != 5 || *argv[1] != '^') && (argc != 2 || (*argv[1] != 'e' && *argv[1] != 'd')))
+	int j=0;
+	if(argc >= 2){
+		if(std::string(argv[1]).find("-o") != std::string::npos) j = 1;
+	}
+	if(argc != (4+j) && (argc != (5+j) || *argv[1+j] != '^') && (argc != (2+j) || (*argv[1+j] != 'e' && *argv[1+j] != 'd')))
 	{
 		std::cout << "Run as bignum -op number1 number2, or bignum -help, where:\n	op is one of + - * / %% gcd encrypt decrypt\n	number1 and number2 are positive integers of arbitrary length\n" << std::endl;
 		return 0;
 	}
-	op = std::string(argv[1]);
+
+	if(j){
+		opt = std::string(argv[1]);
+		if(opt.find("1") != std::string::npos) Bignum::OPT1 = true;
+		if(opt.find("2") != std::string::npos) Bignum::OPT2 = true;
+		if(opt.find("3") != std::string::npos) Bignum::OPT3 = true;
+		if(opt.find("4") != std::string::npos) Bignum::OPT4 = true;
+	}
+
+	op = std::string(argv[1+j]);
 	if(op[0] != 'd' && op[0] != 'e')
 	{
-		num1 = std::string(argv[2]);
+		num1 = std::string(argv[2+j]);
 		if(!is_numeric(num1))
 		{
 			std::cout << "Error: " << num1 << " is not an unsigned integer.\n" << std::endl;
 			return 1;
 		}
-		num2 = std::string(argv[3]);
+		num2 = std::string(argv[3+j]);
 		if(!is_numeric(num2))
 		{
 			std::cout << "Error: " << num2 << " is not an unsigned integer.\n" << std::endl;
 			return 1;
 		}
-		if(argc == 5)
+		if(argc == 5+j)
 		{
-			num3 = std::string(argv[4]);
+			num3 = std::string(argv[4+j]);
 			if(!is_numeric(num3))
 			{
 				std::cout << "Error: " << num3 << " is not an unsigned integer.\n" << std::endl;

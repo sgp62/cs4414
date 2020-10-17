@@ -1,0 +1,36 @@
+Stefen Pegels sgp62
+
+Q1) Top Four methods in encrypt, based on total computing time (run on one-liners):
+
+Bignum::operator-(Bignum) 
+emplace() 
+Bignum::operator*(int) 
+Bignum::operator+(Bignum) 
+
+Top Four methods in decrypt, based on shorter decrypt of one-liners (about 30% length)
+Bignum::operator-(Bignum)
+Bignum::operator+(Bignum)
+emplace()
+Bignum::operator*(int)
+
+The list of the top four is the same for both encryption and decryption, based on total time. It seems like the most improvements need to happen within the three operators, and maybe structuring code differently to avoid emplace()
+
+Q2) For algorithm performance, the do-while loop of the division operator features much of the "grade school" subtraction algorithm in computing the division result, and if this were improved, a lot of the subtraction calls would go away. 
+
+This issue is made worse in the expmod function, which curiously chooses to modify its exponent by DIVIDING by two at each iteration, which involves a long execution of the division loop subtraction, given the grade school implementation. The implementation of expmod could be changed to subtract 1 to the exponent at each step (while changing the multiplication) to reduce some of this algorithmic complexity. This expmod issue applies both to encryption and decryption. 
+
+A malloc_insert() method is called recursively millions of times as well; this might point to poor vector modification with methods like emplace that might be changed to reduce these calls to a reasonable level.
+
+
+Optimizations
+
+O1) Ken’s original code for modular exponentiation computes exp % 2 to decide if exp is even or
+odd. This is quite an expensive way to figure out if exp is even or odd. Should we special-case
+the modulus 2 computation, or modify the exponentiation logic to eliminate this inefficiency?
+
+It seems like % is a costly operation in general, but eliminating this % which is evaluated each execution of the while loop will save a lot of function calls. When a number is represented in binary, the value of the last bit determines if it is even or odd (0 or 1 in the 2^0 slot). std::vector.back is a constant time access, and from this we can use bitwise & to check if the number is even.
+
+
+
+
+Note: "The cake is a lie" with no optimizations about 8.4 seconds
