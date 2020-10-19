@@ -16,6 +16,9 @@ bool Bignum::OPT1 = false;
 bool Bignum::OPT2 = false;
 bool Bignum::OPT3 = false;
 bool Bignum::OPT4 = false;
+int Bignum::BASE = 10;
+Bignum Bignum::BZero = Bignum();
+Bignum Bignum::BOne = Bignum();
 
 bool is_digit(const char value) { return std::isdigit(value); }
 bool is_numeric(const std::string& value) { return std::all_of(value.begin(), value.end(), is_digit); }
@@ -56,6 +59,17 @@ std::string to_chars(Bignum to_numeric)
 	return nlas;
 }
 
+void setbase(){
+        if(Bignum::OPT4){
+		Bignum::BASE = 10000;
+        }
+        else{
+		Bignum::BASE = 10;
+        }
+	Bignum::BZero = Bignum(0);
+	Bignum::BOne = Bignum(1);
+}
+
 int main(int argc, char **argv)
 {
 	std::string op;
@@ -80,7 +94,8 @@ int main(int argc, char **argv)
 		if(opt.find("3") != std::string::npos) Bignum::OPT3 = true;
 		if(opt.find("4") != std::string::npos) Bignum::OPT4 = true;
 	}
-
+	
+	setbase();
 	op = std::string(argv[1+j]);
 	if(op[0] != 'd' && op[0] != 'e')
 	{

@@ -1,7 +1,9 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
+#include <deque>
 #include "bignum.hpp"
+#include <string>
 
 //
 // A Bignum is just a std::vector containing digits in the range 0-9, following the decimal
@@ -22,12 +24,16 @@ Bignum::Bignum(const int& d): Bignum(std::to_string(d))
 {
 }
 
-const Bignum BZero(0);
-const Bignum BOne(1);
 
 Bignum::Bignum(const std::string& s)
 {
-	for(auto c: s)
+        int num = std::stoi(s,0,10000);
+	std::string result = std::to_string(num);
+        //while(num>0){
+        //        result = std::to_string(num%Bignum::BASE) + result;
+        //        num = num/Bignum::BASE;
+        //}
+	for(auto c: result)
 		digits.push_back(c-'0');
 }
 
@@ -101,41 +107,75 @@ bool Bignum::operator!=(const Bignum& b) const
 Bignum Bignum::operator+(const Bignum& b) const
 {
 	Bignum res;
+	std::deque<int> resqueue;
 	int alen = digits.size();
 	int blen = b.digits.size();
 	int aindex = 0, bindex = 0;
-	while(alen > blen)
-	{
-		res.digits.push_back(digits[aindex++]);
-		--alen;
-	}
-	while(blen > alen)
-	{
-		res.digits.push_back(b.digits[bindex++]);
-		--blen;
-	}
-	while(alen-- > 0)
-	{
-		res.digits.push_back(digits[aindex++] + b.digits[bindex++]);
-	}
-	int rlen = res.digits.size();
-	int carry = 0;
-	while(rlen > 0)
-	{
-		carry += res.digits[--rlen];
-		res.digits[rlen] = carry%10;
-		carry /= 10;
-	}
-	while(carry > 0)
-	{
-		res.digits.emplace(res.digits.begin(), carry%10);
-		carry /= 10;
+	if(Bignum::OPT3){
+		while(alen > blen)
+		{
+			resqueue.push_back(digits[aindex++]);
+			--alen;
+		}
+		while(blen > alen)
+		{
+			resqueue.push_back(b.digits[bindex++]);
+			--blen;
+		}
+		while(alen-- > 0)
+		{
+			resqueue.push_back(digits[aindex++] + b.digits[bindex++]);
+		}
+		int rlen = resqueue.size();
+		int carry = 0;
+		while(rlen > 0)
+		{
+			carry += resqueue[--rlen];
+			resqueue[rlen] = carry%Bignum::BASE;
+			carry /= Bignum::BASE;
+		}
+		while(carry > 0)
+		{
+			resqueue.emplace_front(carry%Bignum::BASE);
+			carry /= Bignum::BASE;
+		}
+		res.digits = std::vector<int> (resqueue.begin(),resqueue.end());
+	} else {
+		while(alen > blen)
+		{
+			res.digits.push_back(digits[aindex++]);
+			--alen;
+		}
+		while(blen > alen)
+		{
+			res.digits.push_back(b.digits[bindex++]);
+			--blen;
+		}
+		while(alen-- > 0)
+		{
+			res.digits.push_back(digits[aindex++] + b.digits[bindex++]);
+		}
+		int rlen = res.digits.size();
+		int carry = 0;
+		while(rlen > 0)
+		{
+			carry += res.digits[--rlen];
+			res.digits[rlen] = carry%Bignum::BASE;
+			carry /= Bignum::BASE;
+		
+		}
+		while(carry > 0)
+		{
+			res.digits.emplace(res.digits.begin(), carry%Bignum::BASE);
+			carry /= Bignum::BASE;
+		}
 	}
 	return res;
 }
 
 Bignum Bignum::operator-(const Bignum& b) const
 {
+	std::deque<int> resqueue;
 	Bignum res;
 	int alen = digits.size();
 	int blen = b.digits.size();
@@ -151,7 +191,7 @@ Bignum Bignum::operator-(const Bignum& b) const
 		borrow = 0;
 		if(d < 0)
 		{
-			d += 10;
+			d += Bignum::BASE;
 			borrow = 1;
 		}
 		if(d == 0)
@@ -160,12 +200,23 @@ Bignum Bignum::operator-(const Bignum& b) const
 		}
 		else
 		{
-			while(zeros--)
-			{
-				res.digits.emplace(res.digits.begin(), 0);
+			if(Bignum::OPT3){
+
+				while(zeros--)
+				{
+					resqueue.emplace_front(0);
+				}
+				zeros = 0;
+				resqueue.emplace_front(d);
 			}
-			zeros = 0;
-			res.digits.emplace(res.digits.begin(), d);
+			else {
+				while(zeros--)
+				{
+					res.digits.emplace(res.digits.begin(), 0);
+				}
+				zeros = 0;
+				res.digits.emplace(res.digits.begin(), d);
+			}
 		}
 	}
 	while(alen > 0)
@@ -174,7 +225,7 @@ Bignum Bignum::operator-(const Bignum& b) const
 		borrow = 0;
 		if(d < 0)
 		{
-			d += 10;
+			d += Bignum::BASE;
 			borrow = 1;
 		}
 		if(d == 0)
@@ -183,13 +234,27 @@ Bignum Bignum::operator-(const Bignum& b) const
 		}
 		else
 		{
-			while(zeros--)
-			{
-				res.digits.emplace(res.digits.begin(), 0);
+			if(Bignum::OPT3){
+
+				while(zeros--)
+				{
+					resqueue.emplace_front(0);
+				}
+				zeros = 0;
+				resqueue.emplace_front(d);
 			}
-			zeros = 0;
-			res.digits.emplace(res.digits.begin(), d);
+			else {
+				while(zeros--)
+				{
+					res.digits.emplace(res.digits.begin(), 0);
+				}
+				zeros = 0;
+				res.digits.emplace(res.digits.begin(), d);
+			}
 		}
+	}
+	if(Bignum::OPT3){
+		res.digits = std::vector<int> (resqueue.begin(),resqueue.end());
 	}
 	if(res.digits.size() == 0)
 	{
@@ -211,6 +276,7 @@ Bignum Bignum::operator*(const int& d) const
 	{
 		return *this;
 	}
+	std::deque<int> resqueue;
 	Bignum res;
 	int alen = digits.size();
 	int aindex = 0;
@@ -222,14 +288,20 @@ Bignum Bignum::operator*(const int& d) const
 	while(aindex-- > 0)
 	{
 		carry += res.digits[aindex];
-		res.digits[aindex] = carry%10;
-		carry /= 10;
+		res.digits[aindex] = carry%Bignum::BASE;
+		carry /= Bignum::BASE;
 	}
+	if(Bignum::OPT3) resqueue = std::deque<int> (res.digits.begin(), res.digits.end());
 	while(carry > 0)
 	{
-		res.digits.emplace(res.digits.begin(), carry%10);
-		carry /= 10;
+		if(Bignum::OPT3){
+			resqueue.emplace_front(carry%Bignum::BASE);
+		} else {
+			res.digits.emplace(res.digits.begin(), carry%Bignum::BASE);
+		}
+		carry /= Bignum::BASE;
 	}
+	if(Bignum::OPT3) res.digits = std::vector<int> (resqueue.begin(),resqueue.end());
 	return res;
 }
 
@@ -251,7 +323,7 @@ Bignum Bignum::operator*(const Bignum& b) const
 		}
 		if(blen > 0)
 		{
-			tmp = tmp*10;
+			tmp = tmp*Bignum::BASE;
 		}
 	}
 	return res;

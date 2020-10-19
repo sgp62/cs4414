@@ -29,6 +29,9 @@ class Bignum
 		static bool OPT2;
 		static bool OPT3;
 		static bool OPT4;
+		static int BASE;
+		static Bignum BOne;
+		static Bignum BZero;
 		//Consider std::move()
 	private:
 		std::vector<int> digits;
