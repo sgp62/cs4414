@@ -24,17 +24,24 @@ Bignum::Bignum(const int& d): Bignum(std::to_string(d))
 {
 }
 
-
 Bignum::Bignum(const std::string& s)
 {
-        int num = std::stoi(s,0,10000);
-	std::string result = std::to_string(num);
-        //while(num>0){
-        //        result = std::to_string(num%Bignum::BASE) + result;
-        //        num = num/Bignum::BASE;
-        //}
-	for(auto c: result)
-		digits.push_back(c-'0');
+	if(Bignum::BASE == 10){
+		for(auto c : s){
+			digits.push_back(c-'0');
+		}
+	}
+	else{
+		std::string result = s;
+		if(result.size() % 4 != 0){
+			result = std::string(4 - result.size() % 4, '0') + result;
+		}
+		while(result.size() >= 4)	
+		{
+			digits.push_back(std::stoi(result.substr(0,4)));
+			result = result.substr(4, result.size());
+		}
+	}
 }
 
 std::vector<int> Bignum::as_vec() const
@@ -55,7 +62,7 @@ std::string Bignum::to_string() const
 bool Bignum::operator<(const Bignum& b) const
 {
 	int alen = digits.size();
-	int blen = b.digits.size();
+	int blen = b.digits.size();	
 	int aindex = 0, bindex = 0;
 	if(alen > blen)
 	{
