@@ -32,6 +32,9 @@ class Bignum
 		static int BASE;
 		static Bignum BOne;
 		static Bignum BZero;
+		static std::vector<Bignum> mul_table;
+		void build_mul_table(const Bignum &) const;
+		static std::vector<int> pow2;
 		//Consider std::move()
 	private:
 		std::vector<int> digits;

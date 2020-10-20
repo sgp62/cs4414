@@ -19,6 +19,8 @@ bool Bignum::OPT4 = false;
 int Bignum::BASE = 10;
 Bignum Bignum::BZero = Bignum();
 Bignum Bignum::BOne = Bignum();
+std::vector<Bignum> Bignum::mul_table = {};
+std::vector<int> Bignum::pow2 = {};
 
 bool is_digit(const char value) { return std::isdigit(value); }
 bool is_numeric(const std::string& value) { return std::all_of(value.begin(), value.end(), is_digit); }

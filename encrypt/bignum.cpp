@@ -336,6 +336,18 @@ Bignum Bignum::operator*(const Bignum& b) const
 	return res;
 }
 
+void Bignum::build_mul_table(const Bignum& a) const {
+	Bignum multiple = Bignum(*this);
+	int quick_two = 1;
+	do{
+		mul_table.push_back(multiple);
+		multiple = multiple + multiple;
+		pow2.push_back(quick_two);
+		quick_two = quick_two + quick_two;
+	}
+	while(a > mul_table.back());
+}
+
 Bignum Bignum::operator/(const Bignum& b) const
 {
 	if(b > *this)
@@ -352,59 +364,88 @@ Bignum Bignum::operator/(const Bignum& b) const
 		exit(1);
 	}
 	Bignum res;
-	Bignum tmp;
-	int alen = digits.size();
-	int blen = b.digits.size();
-	int aindex = 0;
-	bool placed_first = false;
-	while(aindex < blen)
-	{
-		int d = digits[aindex++];
-		if(d != 0 || placed_first)
-		{
-			tmp.digits.push_back(d);
-			placed_first = true;
+	if(Bignum::OPT4){
+		Bignum tmp = Bignum(*this);
+		if(Bignum::mul_table.size() == 0){
+			b.build_mul_table(*this);
 		}
-	}
-	if(!placed_first)
-	{
-		tmp = BZero;
-	}
-	bool first = true;
-	do
-	{
-		int d = 0;
-		if(b > tmp && aindex < alen)
-		{
-			d = digits[aindex++];
-			if(d != 0 || tmp != BZero)
-			{
-				if(tmp == BZero)
-				{
-					tmp.digits[0] = d;	
-				}
-				else
-				{
-					tmp.digits.push_back(d);
+		while(tmp >= b){
+			int j = 0, k = mul_table.size()-1;
+			while (j < k){
+				int i = (j + k) / 2;
+				if(Bignum::mul_table[i] < tmp){
+					if(Bignum::mul_table[i+1] <= tmp){
+						j = i+1;
+					} else {
+						tmp = tmp - Bignum::mul_table[i];
+						res = res + Bignum(Bignum::pow2[i]);
+						break;
+					}	
+				} else if(Bignum::mul_table[i] == tmp) {
+					tmp = tmp - Bignum::mul_table[i];
+					res = res + Bignum(Bignum::pow2[i]);
+					break;
+				} else {
+					k = i;
 				}
 			}
 		}
-		d = 0;
-		while(b <= tmp)
-		{
-			++d;
-			tmp = tmp-b;
-		}
-		if(d != 0 || !first)
-		{
-			first = false;
-			res.digits.push_back(d);
-		}
 	}
-	while(aindex < alen);
-	if(res.digits.size() == 0)
-	{
-		return BZero;
+	else{
+		Bignum tmp;
+		int alen = digits.size();
+		int blen = b.digits.size();
+		int aindex = 0;
+		bool placed_first = false;
+		while(aindex < blen)
+		{
+			int d = digits[aindex++];
+			if(d != 0 || placed_first)
+			{
+				tmp.digits.push_back(d);
+				placed_first = true;
+			}
+		}
+		if(!placed_first)
+		{
+			tmp = BZero;
+		}
+		bool first = true;
+		do
+		{
+			int d = 0;
+			if(b > tmp && aindex < alen)
+			{
+				d = digits[aindex++];
+				if(d != 0 || tmp != BZero)
+				{
+					if(tmp == BZero)
+					{
+						tmp.digits[0] = d;	
+					}
+					else
+					{
+						tmp.digits.push_back(d);
+					}
+				}
+			}
+			d = 0;
+			while(b <= tmp)
+			{
+				++d;
+				tmp = tmp-b;
+			}
+			if(d != 0 || !first)
+			{
+				first = false;
+				res.digits.push_back(d);
+			}
+		}
+		while(aindex < alen);
+		if(res.digits.size() == 0)
+		{
+			return BZero;
+		}
 	}
 	return res;
 }
@@ -423,62 +464,93 @@ std::pair<Bignum, Bignum> Bignum::pair_divide(const Bignum& b) const{
 		std::cout << "Error: Divide by 0" << std::endl;
 		exit(1);
 	}
-	Bignum res;
-	Bignum tmp;
-	int alen = digits.size();
-	int blen = b.digits.size();
-	int aindex = 0;
-	bool placed_first = false;
-	while(aindex < blen)
-	{
-		int d = digits[aindex++];
-		if(d != 0 || placed_first)
-		{
-			tmp.digits.push_back(d);
-			placed_first = true;
+	if(Bignum::OPT4){
+		Bignum res;
+		Bignum tmp = Bignum(*this);
+		if(Bignum::mul_table.size() == 0){
+			b.build_mul_table(*this);
 		}
-	}
-	if(!placed_first)
-	{
-		tmp = BZero;
-	}
-	bool first = true;
-	do
-	{
-		int d = 0;
-		if(b > tmp && aindex < alen)
-		{
-			d = digits[aindex++];
-			if(d != 0 || tmp != BZero)
-			{
-				if(tmp == BZero)
-				{
-					tmp.digits[0] = d;	
-				}
-				else
-				{
-					tmp.digits.push_back(d);
+		while(tmp >= b){
+			int j = 0, k = mul_table.size()-1;
+			while (j < k){
+				int i = (j + k) / 2;
+				if(Bignum::mul_table[i] < tmp){
+					if(Bignum::mul_table[i+1] <= tmp){
+						j = i+1;
+					} else {
+						tmp = tmp - Bignum::mul_table[i];
+						res = res + Bignum(Bignum::pow2[i]);
+						break;
+					}	
+				} else if(Bignum::mul_table[i] == tmp) {
+					tmp = tmp - Bignum::mul_table[i];
+					res = res + Bignum(Bignum::pow2[i]);
+					break;
+				} else {
+					k = i;
 				}
 			}
 		}
-		d = 0;
-		while(b <= tmp)
-		{
-			++d;
-			tmp = tmp-b;
-		}
-		if(d != 0 || !first)
-		{
-			first = false;
-			res.digits.push_back(d);
-		}
+		return {res, tmp};
 	}
-	while(aindex < alen);
-	if(res.digits.size() == 0)
-	{
-		return { BZero, tmp };
+	else{
+		Bignum res;
+		Bignum tmp;
+		int alen = digits.size();
+		int blen = b.digits.size();
+		int aindex = 0;
+		bool placed_first = false;
+		while(aindex < blen)
+		{
+			int d = digits[aindex++];
+			if(d != 0 || placed_first)
+			{
+				tmp.digits.push_back(d);
+				placed_first = true;
+			}
+		}
+		if(!placed_first)
+		{
+			tmp = BZero;
+		}
+		bool first = true;
+		do
+		{
+			int d = 0;
+			if(b > tmp && aindex < alen)
+			{
+				d = digits[aindex++];
+				if(d != 0 || tmp != BZero)
+				{
+					if(tmp == BZero)
+					{
+						tmp.digits[0] = d;	
+					}
+					else
+					{
+						tmp.digits.push_back(d);
+					}
+				}
+			}
+			d = 0;
+			while(b <= tmp)
+			{
+				++d;
+				tmp = tmp-b;
+			}
+			if(d != 0 || !first)
+			{
+				first = false;
+				res.digits.push_back(d);
+			}
+		}
+		while(aindex < alen);
+		if(res.digits.size() == 0)
+		{
+			return { BZero, tmp };
+		}
+		return { res, tmp};
 	}
-	return { res, tmp };
 }
 
 Bignum Bignum::operator%(const Bignum& b) const{
