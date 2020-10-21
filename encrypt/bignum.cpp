@@ -44,6 +44,7 @@ Bignum::Bignum(const std::string& s)
 	}
 }
 
+
 std::vector<int> Bignum::as_vec() const
 {
 	return digits;
@@ -337,8 +338,9 @@ Bignum Bignum::operator*(const Bignum& b) const
 }
 
 void Bignum::build_mul_table(const Bignum& a) const {
+	mul_table.clear();
 	Bignum multiple = Bignum(*this);
-	int quick_two = 1;
+	Bignum quick_two = Bignum(1);
 	do{
 		mul_table.push_back(multiple);
 		multiple = multiple + multiple;
@@ -366,12 +368,10 @@ Bignum Bignum::operator/(const Bignum& b) const
 	Bignum res;
 	if(Bignum::OPT4){
 		Bignum tmp = Bignum(*this);
-		if(Bignum::mul_table.size() == 0){
-			b.build_mul_table(*this);
-		}
+		b.build_mul_table(*this);
 		while(tmp >= b){
 			int j = 0, k = mul_table.size()-1;
-			while (j < k){
+			while (j <= k){
 				int i = (j + k) / 2;
 				if(Bignum::mul_table[i] < tmp){
 					if(Bignum::mul_table[i+1] <= tmp){
@@ -386,7 +386,7 @@ Bignum Bignum::operator/(const Bignum& b) const
 					res = res + Bignum(Bignum::pow2[i]);
 					break;
 				} else {
-					k = i;
+					k = i-1;
 				}
 			}
 		}
@@ -467,12 +467,10 @@ std::pair<Bignum, Bignum> Bignum::pair_divide(const Bignum& b) const{
 	if(Bignum::OPT4){
 		Bignum res;
 		Bignum tmp = Bignum(*this);
-		if(Bignum::mul_table.size() == 0){
-			b.build_mul_table(*this);
-		}
+		b.build_mul_table(*this);
 		while(tmp >= b){
 			int j = 0, k = mul_table.size()-1;
-			while (j < k){
+			while (j <= k){
 				int i = (j + k) / 2;
 				if(Bignum::mul_table[i] < tmp){
 					if(Bignum::mul_table[i+1] <= tmp){
@@ -487,7 +485,7 @@ std::pair<Bignum, Bignum> Bignum::pair_divide(const Bignum& b) const{
 					res = res + Bignum(Bignum::pow2[i]);
 					break;
 				} else {
-					k = i;
+					k = i-1;
 				}
 			}
 		}
@@ -596,8 +594,15 @@ Bignum Bignum::expmod(Bignum exp, const Bignum& mod) const
 
 Bignum Bignum::gcd(const Bignum& b) const
 {
-	if (b == BZero)
+	if (b == BZero) {
+//		std::cout << "Yeet" << std::endl;
 		return *this;
+	}
+//	std::cout << "this: " << (*this).to_string() << std::endl;
+//	std::cout << "b: " << b.to_string() << std::endl;
+//	std::cout << "this % b: " << (*this % b).to_string() << std::endl;
+//	std::cout << "Length of *this :" << this->digits.size() << std::endl;
+//	std::cout << "Length of b :" << b.digits.size() << std::endl;
 	return b.gcd(*this % b);
 }
 

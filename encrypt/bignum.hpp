@@ -34,7 +34,7 @@ class Bignum
 		static Bignum BZero;
 		static std::vector<Bignum> mul_table;
 		void build_mul_table(const Bignum &) const;
-		static std::vector<int> pow2;
+		static std::vector<Bignum> pow2;
 		//Consider std::move()
 	private:
 		std::vector<int> digits;
