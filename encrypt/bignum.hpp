@@ -35,6 +35,7 @@ class Bignum
 		static std::vector<Bignum> mul_table;
 		void build_mul_table(const Bignum &) const;
 		static std::vector<Bignum> pow2;
+		Bignum back_to_ten(const Bignum&) const;
 		//Consider std::move()
 	private:
 		std::vector<int> digits;

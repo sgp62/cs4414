@@ -44,6 +44,24 @@ Bignum::Bignum(const std::string& s)
 	}
 }
 
+Bignum Bignum::back_to_ten(const Bignum& b) const{
+	Bignum res;
+	std::string temp;
+	for(auto i : b.digits){
+		std::string elem = std::to_string(i);
+		if(std::to_string(i).size() % 4 != 0){
+			elem = std::string(4 - std::to_string(i).length() % 4, '0') + elem;
+		}
+		temp = temp + elem;
+	}
+	const long unsigned int j = temp.find_first_not_of("0");
+	if(j != std::string::npos){ temp = temp.substr(j); }
+	for(auto c : temp){
+		res.digits.push_back(c-'0');
+	}
+	return res;
+}
+
 
 std::vector<int> Bignum::as_vec() const
 {
@@ -338,16 +356,17 @@ Bignum Bignum::operator*(const Bignum& b) const
 }
 
 void Bignum::build_mul_table(const Bignum& a) const {
-	mul_table.clear();
+	std::vector<Bignum>().swap(Bignum::mul_table);
+	std::vector<Bignum>().swap(Bignum::pow2);
 	Bignum multiple = Bignum(*this);
 	Bignum quick_two = Bignum(1);
 	do{
-		mul_table.push_back(multiple);
+		Bignum::mul_table.push_back(multiple);
 		multiple = multiple + multiple;
-		pow2.push_back(quick_two);
+		Bignum::pow2.push_back(quick_two);
 		quick_two = quick_two + quick_two;
 	}
-	while(a > mul_table.back());
+	while(a > Bignum::mul_table.back());
 }
 
 Bignum Bignum::operator/(const Bignum& b) const
@@ -365,12 +384,12 @@ Bignum Bignum::operator/(const Bignum& b) const
 		std::cout << "Error: Divide by 0" << std::endl;
 		exit(1);
 	}
-	Bignum res;
 	if(Bignum::OPT4){
+		Bignum res;
 		Bignum tmp = Bignum(*this);
 		b.build_mul_table(*this);
 		while(tmp >= b){
-			int j = 0, k = mul_table.size()-1;
+			int j = 0, k = Bignum::mul_table.size()-1;
 			while (j <= k){
 				int i = (j + k) / 2;
 				if(Bignum::mul_table[i] < tmp){
@@ -390,8 +409,10 @@ Bignum Bignum::operator/(const Bignum& b) const
 				}
 			}
 		}
+		return res;
 	}
 	else{
+		Bignum res;
 		Bignum tmp;
 		int alen = digits.size();
 		int blen = b.digits.size();
@@ -446,8 +467,8 @@ Bignum Bignum::operator/(const Bignum& b) const
 		{
 			return BZero;
 		}
+		return res;
 	}
-	return res;
 }
 
 std::pair<Bignum, Bignum> Bignum::pair_divide(const Bignum& b) const{
@@ -469,7 +490,7 @@ std::pair<Bignum, Bignum> Bignum::pair_divide(const Bignum& b) const{
 		Bignum tmp = Bignum(*this);
 		b.build_mul_table(*this);
 		while(tmp >= b){
-			int j = 0, k = mul_table.size()-1;
+			int j = 0, k = Bignum::mul_table.size()-1;
 			while (j <= k){
 				int i = (j + k) / 2;
 				if(Bignum::mul_table[i] < tmp){
@@ -595,14 +616,8 @@ Bignum Bignum::expmod(Bignum exp, const Bignum& mod) const
 Bignum Bignum::gcd(const Bignum& b) const
 {
 	if (b == BZero) {
-//		std::cout << "Yeet" << std::endl;
 		return *this;
 	}
-//	std::cout << "this: " << (*this).to_string() << std::endl;
-//	std::cout << "b: " << b.to_string() << std::endl;
-//	std::cout << "this % b: " << (*this % b).to_string() << std::endl;
-//	std::cout << "Length of *this :" << this->digits.size() << std::endl;
-//	std::cout << "Length of b :" << b.digits.size() << std::endl;
 	return b.gcd(*this % b);
 }
 
@@ -613,6 +628,9 @@ Bignum Bignum::encrypt(const std::string& rsa_n, const std::string& rsa_e) const
 
 Bignum Bignum::decrypt(const std::string& rsa_n, const std::string& rsa_d) const
 {
+//	if(Bignum::OPT4){ 
+//		return back_to_ten(expmod(Bignum(rsa_d), Bignum(rsa_n)));
+//     	}
 	return expmod(Bignum(rsa_d), Bignum(rsa_n));
 }
 
