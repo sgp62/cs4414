@@ -38,6 +38,6 @@ class Bignum
 		Bignum back_to_ten(const Bignum&) const;
 		//Consider std::move()
 	private:
-		std::vector<int> digits;
 		void append_digit(int);
+		std::vector<int> digits;
 };

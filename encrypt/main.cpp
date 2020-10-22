@@ -186,11 +186,16 @@ int main(int argc, char **argv)
 				std::string part1, part2;
 				std::getline(std::cin, part1);
 				std::getline(std::cin, part2);
-				std::cout << to_chars(Bignum(part1).decrypt(rsa_n, rsa_d).to_string());
+
+				Bignum result = Bignum(part1).decrypt(rsa_n, rsa_d);
 				Bignum p2 = Bignum(part2).decrypt(rsa_n, rsa_d);
+
+				Bignum::BASE = 10;
+				std::cout << to_chars(Bignum(result).to_string());
+
 				if(p2 > Bignum(100000))
 				{
-					std::cout << to_chars(p2.to_string());
+					std::cout << to_chars(Bignum(p2).to_string());
 				}
 				std::cout << std::endl;
 			}

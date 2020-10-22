@@ -623,14 +623,17 @@ Bignum Bignum::gcd(const Bignum& b) const
 
 Bignum Bignum::encrypt(const std::string& rsa_n, const std::string& rsa_e) const
 {
+	if(Bignum::OPT4){ 
+		return back_to_ten(expmod(Bignum(rsa_e), Bignum(rsa_n)));
+     	}
 	return expmod(Bignum(rsa_e), Bignum(rsa_n)).to_string();
 }
 
 Bignum Bignum::decrypt(const std::string& rsa_n, const std::string& rsa_d) const
 {
-//	if(Bignum::OPT4){ 
-//		return back_to_ten(expmod(Bignum(rsa_d), Bignum(rsa_n)));
-//     	}
+	if(Bignum::OPT4){ 
+		return back_to_ten(expmod(Bignum(rsa_d), Bignum(rsa_n)));
+     	}
 	return expmod(Bignum(rsa_d), Bignum(rsa_n));
 }
 
