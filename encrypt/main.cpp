@@ -189,7 +189,8 @@ int main(int argc, char **argv)
 
 				Bignum result = Bignum(part1).decrypt(rsa_n, rsa_d);
 				Bignum p2 = Bignum(part2).decrypt(rsa_n, rsa_d);
-
+			
+				int a = Bignum::BASE;
 				Bignum::BASE = 10;
 				std::cout << to_chars(Bignum(result).to_string());
 
@@ -197,6 +198,7 @@ int main(int argc, char **argv)
 				{
 					std::cout << to_chars(Bignum(p2).to_string());
 				}
+				Bignum::BASE = a;
 				std::cout << std::endl;
 			}
 			return 0;
