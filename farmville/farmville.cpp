@@ -7,7 +7,24 @@
 //  Layer 2 objects:  chicken, bags of flour, sugar, box of butter, crate of eggs, cupcakes, cake batter
 //  Layer 3 objects:  cow, truck, stuff in the mixer
 //
-DisplayObject nest[4] = {DisplayObject("\
+DisplayObject nest1[4] = {DisplayObject("\
+\\       /#\
+ -------", 0),
+
+DisplayObject("\
+\\   O   /#\
+ -------", 0),
+
+DisplayObject("\
+\\  OO   /#\
+ -------", 0),
+
+DisplayObject("\
+\\  OOO  /#\
+ -------", 0),
+};
+
+DisplayObject nest2[4] = {DisplayObject("\
 \\       /#\
  -------", 0),
 
@@ -29,6 +46,16 @@ DisplayObject chicken("\
    ^( )#\
     = =", 2);
 
+DisplayObject chicken2("\
+     O>#\
+   ^( )#\
+    = =", 2);
+
+DisplayObject chicken3("\
+     O>#\
+   ^( )#\
+    = =", 2);
+
 DisplayObject cow("\
    ____ \"#\
  /(____)U#\
@@ -45,7 +72,13 @@ DisplayObject child("\
  /()\\#\
   !!", 1);
 
-DisplayObject barn("\
+DisplayObject egg_barn("\
+   __ ^#\
+  /  /  \\#\
+ |  | _  |#\
+ |  |[ ] |", 3);
+
+DisplayObject sugar_barn("\
    __ ^#\
   /  /  \\#\
  |  | _  |#\
@@ -78,6 +111,11 @@ DisplayObject bakery("\
       Anne's Patisserie", 0);
                                         
 DisplayObject truck("\
+   _______#\
+  |       |__#\
+  -OO----OO-O|", 3);
+
+DisplayObject truck2("\
    _______#\
   |       |__#\
   -OO----OO-O|", 3);
@@ -162,7 +200,7 @@ void redisplay()
 
 int main(int argc, char** argv)
 {	
-	barn.draw(1, 1);
+	egg_barn.draw(1, 1);
 	bakery.draw(10, 50);
 	cow.draw(17, 18);
 	farmer.draw(22, 19);
@@ -178,7 +216,7 @@ int main(int argc, char** argv)
 	DisplayObject mixer_contents(mixer_string, 3);
 	for(int n = 0; n < 10000; n++)
 	{
-		nest[n % 4].draw(10, 10);
+		nest1[n % 4].draw(10, 10);
 		cupcakes[n % 7].draw(15, 80);
 		if(mc == 0xF)
 		{	
