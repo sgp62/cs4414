@@ -1,6 +1,8 @@
 #include <iostream>
 #include <unistd.h>
 #include "displayobject.hpp"
+#include <thread>
+#include <chrono>
 //
 //  "Background" objects are in layer 0: barn, nest, bakery.
 //  Layer 1 objects:  farmer, child
@@ -41,7 +43,7 @@ DisplayObject("\
  -------", 0),
 };
 
-DisplayObject chicken("\
+DisplayObject chicken1("\
      O>#\
    ^( )#\
     = =", 2);
@@ -73,10 +75,10 @@ DisplayObject child("\
   !!", 1);
 
 DisplayObject egg_barn("\
-   __ ^#\
-  /  /  \\#\
- |  | _  |#\
- |  |[ ] |", 3);
+    __ ^#\
+    /  /  \\#\
+  |  | _  |#\
+  |  |[ ] |", 3);
 
 DisplayObject sugar_barn("\
    __ ^#\
@@ -110,7 +112,7 @@ DisplayObject bakery("\
 -----------------------------------|#\
       Anne's Patisserie", 0);
                                         
-DisplayObject truck("\
+DisplayObject truck1("\
    _______#\
   |       |__#\
   -OO----OO-O|", 3);
@@ -193,6 +195,64 @@ void redisplay()
                      " Cakes: Baked=" << cakes_produced << ", Sold=" << cakes_sold << std::endl;
 }
 
+void egg_barn_a() {
+  egg_barn.draw(1,1);
+}
+
+void bakery_a() {
+  bakery.draw(10, 50);
+}
+
+void cow_a() {
+  cow.draw(17, 18);
+}
+
+void farmer_a() {
+  farmer.draw(22, 19);
+}
+
+void child_a() {
+  child.draw(30, 19);
+}
+
+void egg_a() {
+  eggs.draw(14, 43);
+}
+
+void flour_a() {
+  flour.draw(18, 43);
+}
+
+void sugar_a() {
+  sugar.draw(22, 43);
+}
+
+void butter_a() {
+  butter.draw(26, 43);
+}
+
+void truck1_a() {
+  truck1.draw(42, 15);
+}
+
+void truck2_a() {
+  truck2.draw(36, 15);
+}
+
+void nest_a() {
+  for(int n = 0; n < 10000; n++){
+    nest1[n % 4].draw(10, 10);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+  }
+}
+
+void cupcakes_a() {
+  for(int n = 0; n < 10000; n++){
+    cupcakes[n % 7].draw(15, 80);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+
+  }
+}
 // Below is a totally fake main method that simply puts some of the icons on the screen to illustrate various options
 // It moves the chicken around randomly (if it goes "into" the barn, it vanishes because the barn is in a higher layer).
 // It also illustrates how you can generate a string and turn it into a display object that will vanish after a little while
@@ -200,24 +260,27 @@ void redisplay()
 
 int main(int argc, char** argv)
 {	
-	egg_barn.draw(1, 1);
-	bakery.draw(10, 50);
-	cow.draw(17, 18);
-	farmer.draw(22, 19);
-	child.draw(30, 19);
-	eggs.draw(14, 43);
-	flour.draw(18, 43);
-	sugar.draw(22, 43);
-	butter.draw(26, 43);
-	truck.draw(42, 15);
+  std::thread egg_barn_t(egg_barn_a);
+  std::thread bakery_t(bakery_a);
+  std::thread cow_t(cow_a);
+  std::thread farmer_t(farmer_a);
+  std::thread child_t(child_a);
+  std::thread egg_t(egg_a);
+	std::thread flour_t(flour_a);
+  std::thread sugar_t(sugar_a);
+  std::thread butter_t(butter_a);
+	std::thread truck1_t(truck1_a);
+  std::thread truck2_t(truck2_a);
+  std::thread nest_t(nest_a);
+  std::thread cupcakes_t(cupcakes_a);
 	int y = 10, oldy = 10, x = 10, oldx = 10, mc = 0;
 	bool baked = false;
 	std::string mixer_string;
 	DisplayObject mixer_contents(mixer_string, 3);
 	for(int n = 0; n < 10000; n++)
 	{
-		nest1[n % 4].draw(10, 10);
-		cupcakes[n % 7].draw(15, 80);
+		//nest1[n % 4].draw(10, 10);
+		//cupcakes[n % 7].draw(15, 80);
 		if(mc == 0xF)
 		{	
 			// All the batter ingredients are in the mixer!  Mix them, then
@@ -248,7 +311,7 @@ int main(int argc, char** argv)
 		}
 		y = std::max(1, y + (1+std::rand()) % 10 - 5);
 		x = std::max(1, x + (1+std::rand()) % 10 - 5);
-		chicken.draw(oldy = y, oldx = x);
+		chicken1.draw(oldy = y, oldx = x);
 		redisplay();
 		usleep(1000000);
 	}

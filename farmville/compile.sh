@@ -1,1 +1,1 @@
-g++ -g -Wall -Wpedantic -std=c++17 farmville.cpp displayobject.cpp -o farmville
+g++ -g -Wall -Wpedantic -std=c++17 -pthread farmville.cpp displayobject.cpp -o farmville
