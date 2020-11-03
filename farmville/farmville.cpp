@@ -253,34 +253,24 @@ void cupcakes_a() {
 
   }
 }
-// Below is a totally fake main method that simply puts some of the icons on the screen to illustrate various options
-// It moves the chicken around randomly (if it goes "into" the barn, it vanishes because the barn is in a higher layer).
-// It also illustrates how you can generate a string and turn it into a display object that will vanish after a little while
-// when that object goes out of scope and the deconstructor executes.
 
-int main(int argc, char** argv)
-{	
-  std::thread egg_barn_t(egg_barn_a);
-  std::thread bakery_t(bakery_a);
-  std::thread cow_t(cow_a);
-  std::thread farmer_t(farmer_a);
-  std::thread child_t(child_a);
-  std::thread egg_t(egg_a);
-	std::thread flour_t(flour_a);
-  std::thread sugar_t(sugar_a);
-  std::thread butter_t(butter_a);
-	std::thread truck1_t(truck1_a);
-  std::thread truck2_t(truck2_a);
-  std::thread nest_t(nest_a);
-  std::thread cupcakes_t(cupcakes_a);
-	int y = 10, oldy = 10, x = 10, oldx = 10, mc = 0;
-	bool baked = false;
+void chicken1_a() {
+	int y = 10, oldy = 10, x = 10, oldx = 10;
+  for(int n = 0; n < 10000; n++){      
+    y = std::max(1, y + (1+std::rand()) % 10 - 5);
+    x = std::max(1, x + (1+std::rand()) % 10 - 5);
+    chicken1.draw(oldy = y, oldx = x);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+  }
+}
+
+void mixer_a() {
+  bool baked = false;
 	std::string mixer_string;
 	DisplayObject mixer_contents(mixer_string, 3);
+  int mc = 0;
 	for(int n = 0; n < 10000; n++)
 	{
-		//nest1[n % 4].draw(10, 10);
-		//cupcakes[n % 7].draw(15, 80);
 		if(mc == 0xF)
 		{	
 			// All the batter ingredients are in the mixer!  Mix them, then
@@ -308,12 +298,35 @@ int main(int argc, char** argv)
 			{
 				baked = false;
 			}
-		}
-		y = std::max(1, y + (1+std::rand()) % 10 - 5);
-		x = std::max(1, x + (1+std::rand()) % 10 - 5);
-		chicken1.draw(oldy = y, oldx = x);
-		redisplay();
-		usleep(1000000);
-	}
-        return 0;
+    }
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+  }
+}
+// Below is a totally fake main method that simply puts some of the icons on the screen to illustrate various options
+// It moves the chicken around randomly (if it goes "into" the barn, it vanishes because the barn is in a higher layer).
+// It also illustrates how you can generate a string and turn it into a display object that will vanish after a little while
+// when that object goes out of scope and the deconstructor executes.
+
+int main(int argc, char** argv)
+{	
+  std::thread egg_barn_t(egg_barn_a);
+  std::thread bakery_t(bakery_a);
+  std::thread cow_t(cow_a);
+  std::thread farmer_t(farmer_a);
+  std::thread child_t(child_a);
+  std::thread egg_t(egg_a);
+	std::thread flour_t(flour_a);
+  std::thread sugar_t(sugar_a);
+  std::thread butter_t(butter_a);
+	std::thread truck1_t(truck1_a);
+  std::thread truck2_t(truck2_a);
+  std::thread nest_t(nest_a);
+  std::thread cupcakes_t(cupcakes_a);
+  std::thread chicken1_t(chicken1_a);
+  std::thread mixer_t(mixer_a);
+	while(true){
+    redisplay();
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+  }
+  return 0;
 }
