@@ -209,7 +209,7 @@ void bakery_a() {
 }
 
 void cow_a() {
-  cow.draw(17, 48);
+  cow.draw(15, 55);
 }
 
 void farmer_a() {
@@ -246,14 +246,14 @@ void truck2_a() {
 
 void nest_1a() {
   for(int n = 0; n < 10000; n++){
-    nest1[n % 4].draw(10, 10);
+    nest1[n % 4].draw(15, 15);
     std::this_thread::sleep_for(1s);
   }
 }
 
 void nest_2a() {
   for(int n = 0; n < 10000; n++){
-    nest2[n % 4].draw(20, 10);
+    nest2[n % 4].draw(15, 35);
     std::this_thread::sleep_for(1s);
   }
 }
@@ -267,14 +267,43 @@ void cupcakes_a() {
   }
 }
 
-void chicken1_a() {
-	int y = 10, oldy = 10, x = 10, oldx = 10;
+void chicken_a(DisplayObject &c) {
+  int y1 = nest1[0].current_y, x1 = nest1[0].current_x;
+  int y2 = nest2[0].current_y, x2 = nest2[0].current_x;
+  c.draw(y1-3,x1);
+  while(true){
+    if(c.current_x == x1){
+      do{
+        c.draw(c.current_y, c.current_x+1);
+        std::this_thread::sleep_for(500ms);
+      }
+      while(c.current_x != x2);
+    }
+    else if(c.current_x == x2){
+      do{
+        c.draw(c.current_y+1, c.current_x);
+        std::this_thread::sleep_for(500ms);
+      }
+      while(c.current_y != y2+3);
+      do{
+        c.draw(c.current_y, c.current_x-1);
+        std::this_thread::sleep_for(500ms);
+      }
+      while(c.current_x != x1);
+      do{
+        c.draw(c.current_y-1, c.current_x);
+        std::this_thread::sleep_for(500ms);
+      }
+      while(c.current_y != y1-3);
+    }
+  }
+	/*int y = 10, oldy = 10, x = 10, oldx = 10;
   for(int n = 0; n < 10000; n++){
     y = std::max(1, y + (1+std::rand()) % 10 - 5);
     x = std::max(1, x + (1+std::rand()) % 10 - 5);
     chicken1.draw(oldy = y, oldx = x);
     std::this_thread::sleep_for(500ms);
-  }
+  }*/
 }
 
 void mixer_a() {
@@ -337,7 +366,7 @@ int main(int argc, char** argv)
   std::thread nest_1t(nest_1a);
   std::thread nest_2t(nest_2a);
   std::thread cupcakes_t(cupcakes_a);
-  std::thread chicken1_t(chicken1_a);
+  std::thread chicken1_t(chicken_a, std::ref(chicken1));
   std::thread mixer_t(mixer_a);
 	while(true){
     redisplay();
