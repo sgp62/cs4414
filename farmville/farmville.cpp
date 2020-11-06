@@ -3,6 +3,7 @@
 #include "displayobject.hpp"
 #include <thread>
 #include <chrono>
+using namespace std::chrono_literals;
 //
 //  "Background" objects are in layer 0: barn, nest, bakery.
 //  Layer 1 objects:  farmer, child
@@ -76,7 +77,7 @@ DisplayObject child("\
 
 DisplayObject egg_barn("\
     __ ^#\
-    /  /  \\#\
+   /  /  \\#\
   |  | _  |#\
   |  |[ ] |", 3);
 
@@ -196,15 +197,19 @@ void redisplay()
 }
 
 void egg_barn_a() {
-  egg_barn.draw(1,1);
+  egg_barn.draw(27,10);
+}
+
+void sugar_barn_a() {
+  sugar_barn.draw(37,25);
 }
 
 void bakery_a() {
-  bakery.draw(10, 50);
+  bakery.draw(30, 70);
 }
 
 void cow_a() {
-  cow.draw(17, 18);
+  cow.draw(17, 48);
 }
 
 void farmer_a() {
@@ -212,55 +217,63 @@ void farmer_a() {
 }
 
 void child_a() {
-  child.draw(30, 19);
+  child.draw(30, 120);
 }
 
 void egg_a() {
-  eggs.draw(14, 43);
+  eggs.draw(34, 63);
 }
 
 void flour_a() {
-  flour.draw(18, 43);
+  flour.draw(38, 63);
 }
 
 void sugar_a() {
-  sugar.draw(22, 43);
+  sugar.draw(42, 63);
 }
 
 void butter_a() {
-  butter.draw(26, 43);
+  butter.draw(46, 63);
 }
 
 void truck1_a() {
-  truck1.draw(42, 15);
+  truck1.draw(31, 9);
 }
 
 void truck2_a() {
-  truck2.draw(36, 15);
+  truck2.draw(41, 23);
 }
 
-void nest_a() {
+void nest_1a() {
   for(int n = 0; n < 10000; n++){
     nest1[n % 4].draw(10, 10);
-    std::this_thread::sleep_for(std::chrono::seconds(1));
+    std::this_thread::sleep_for(1s);
   }
 }
 
+void nest_2a() {
+  for(int n = 0; n < 10000; n++){
+    nest2[n % 4].draw(20, 10);
+    std::this_thread::sleep_for(1s);
+  }
+}
+
+
 void cupcakes_a() {
   for(int n = 0; n < 10000; n++){
-    cupcakes[n % 7].draw(15, 80);
-    std::this_thread::sleep_for(std::chrono::seconds(1));
+    cupcakes[n % 7].draw(35, 100);
+    std::this_thread::sleep_for(1s);
 
   }
 }
 
 void chicken1_a() {
 	int y = 10, oldy = 10, x = 10, oldx = 10;
-  for(int n = 0; n < 10000; n++){      
+  for(int n = 0; n < 10000; n++){
     y = std::max(1, y + (1+std::rand()) % 10 - 5);
     x = std::max(1, x + (1+std::rand()) % 10 - 5);
     chicken1.draw(oldy = y, oldx = x);
-    std::this_thread::sleep_for(std::chrono::seconds(1));
+    std::this_thread::sleep_for(500ms);
   }
 }
 
@@ -278,9 +291,9 @@ void mixer_a() {
 			mc = 0;
 			mixer_string = "";
 			mixer_contents.update_contents(mixer_string);
-			mixer_contents.draw(26, 72);
+			mixer_contents.draw(46, 92);
 			// This draws a picture of batter in the oven... but never erases it.
-			batter.draw(19, 74);
+			batter.draw(39, 94);
 			baked = true;
 		}
 		else
@@ -293,13 +306,13 @@ void mixer_a() {
 			mixer_string += (mc & 0x4)? " F": "  ";
 			mixer_string += (mc & 0x8)? "S": " ";
 			mixer_contents.update_contents(mixer_string);
-			mixer_contents.draw(26, 72);
+			mixer_contents.draw(46, 92);
 			if(baked && (n % 6) == 5)
 			{
 				baked = false;
 			}
     }
-    std::this_thread::sleep_for(std::chrono::seconds(1));
+    std::this_thread::sleep_for(1s);
   }
 }
 // Below is a totally fake main method that simply puts some of the icons on the screen to illustrate various options
@@ -310,6 +323,7 @@ void mixer_a() {
 int main(int argc, char** argv)
 {	
   std::thread egg_barn_t(egg_barn_a);
+  std::thread sugar_barn_t(sugar_barn_a);
   std::thread bakery_t(bakery_a);
   std::thread cow_t(cow_a);
   std::thread farmer_t(farmer_a);
@@ -320,13 +334,14 @@ int main(int argc, char** argv)
   std::thread butter_t(butter_a);
 	std::thread truck1_t(truck1_a);
   std::thread truck2_t(truck2_a);
-  std::thread nest_t(nest_a);
+  std::thread nest_1t(nest_1a);
+  std::thread nest_2t(nest_2a);
   std::thread cupcakes_t(cupcakes_a);
   std::thread chicken1_t(chicken1_a);
   std::thread mixer_t(mixer_a);
 	while(true){
     redisplay();
-    std::this_thread::sleep_for(std::chrono::seconds(1));
+    std::this_thread::sleep_for(500ms);
   }
   return 0;
 }
