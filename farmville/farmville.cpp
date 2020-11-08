@@ -3,6 +3,7 @@
 #include "displayobject.hpp"
 #include <thread>
 #include <chrono>
+#include <string>
 using namespace std::chrono_literals;
 //
 //  "Background" objects are in layer 0: barn, nest, bakery.
@@ -79,13 +80,13 @@ DisplayObject egg_barn("\
     __ ^#\
    /  /  \\#\
   |  | _  |#\
-  |  |[ ] |", 3);
+  |  |[ ] |", 0);
 
 DisplayObject sugar_barn("\
    __ ^#\
   /  /  \\#\
  |  | _  |#\
- |  |[ ] |", 3);
+ |  |[ ] |", 0);
 
 DisplayObject bakery("\
 -----------------------------------|#\
@@ -197,11 +198,11 @@ void redisplay()
 }
 
 void egg_barn_a() {
-  egg_barn.draw(27,10);
+  egg_barn.draw(30,30);
 }
 
 void sugar_barn_a() {
-  sugar_barn.draw(37,25);
+  sugar_barn.draw(42,30);
 }
 
 void bakery_a() {
@@ -225,36 +226,138 @@ void egg_a() {
 }
 
 void flour_a() {
-  flour.draw(38, 63);
+  flour.draw(42, 63);
 }
 
 void sugar_a() {
-  sugar.draw(42, 63);
+  sugar.draw(46, 63);
 }
 
 void butter_a() {
-  butter.draw(46, 63);
+  butter.draw(38, 63);
 }
 
 void truck1_a() {
-  truck1.draw(31, 9);
+  truck1.draw(34, 30);
+  std::string from = "start";
+  while(true){
+    if(truck1.current_x == egg_barn.current_x){
+      std::this_thread::sleep_for(3s);
+      if(from == "start" || from == "butter"){
+        from = "eggs";
+        do{
+          truck1.draw(truck1.current_y, truck1.current_x+1);
+          std::this_thread::sleep_for(200ms);
+        }
+        while(truck1.current_x != bakery.current_x-13);
+      }
+      else if(from == "eggs"){
+        from = "butter";
+        do{
+          truck1.draw(truck1.current_y+1, truck1.current_x);
+          std::this_thread::sleep_for(200ms);
+        }
+        while(truck1.current_y != bakery.current_y+8);
+        do{
+          truck1.draw(truck1.current_y, truck1.current_x+1);
+          std::this_thread::sleep_for(200ms);
+        }
+        while(truck1.current_x != bakery.current_x-13);
+      }
+    }
+    else if(truck1.current_x == bakery.current_x-13){
+      std::this_thread::sleep_for(3s);
+      do{
+        truck1.draw(truck1.current_y, truck1.current_x-1);
+        std::this_thread::sleep_for(200ms);
+      }
+      while(truck1.current_x != egg_barn.current_x);
+      if(from == "butter"){
+        do{
+          truck1.draw(truck1.current_y-1, truck1.current_x);
+          std::this_thread::sleep_for(200ms);
+        }
+        while(truck1.current_y != egg_barn.current_y+4);
+      }
+
+    }
+  }
 }
 
+
 void truck2_a() {
-  truck2.draw(41, 23);
+  truck2.draw(46, 30);
+  std::string from = "start";
+  while(true){
+    if(truck2.current_x == sugar_barn.current_x){
+      std::this_thread::sleep_for(3s);
+      if(from == "start" || from == "flour"){
+        from = "sugar";
+        do{
+          truck2.draw(truck2.current_y, truck2.current_x+1);
+          std::this_thread::sleep_for(200ms);
+        }
+        while(truck2.current_x != bakery.current_x-13);
+      }
+      else if(from == "sugar"){
+        from = "flour";
+        do{
+          truck2.draw(truck2.current_y, truck2.current_x+1);
+          std::this_thread::sleep_for(200ms);
+        }
+        while(truck2.current_x != bakery.current_x-13);
+        do{
+          truck2.draw(truck2.current_y-1, truck2.current_x);
+          std::this_thread::sleep_for(200ms);
+        }
+        while(truck2.current_y != sugar_barn.current_y);
+      }
+    }
+    else if(truck2.current_x == bakery.current_x-13){
+      std::this_thread::sleep_for(3s);
+      if(from == "flour"){
+        do{
+          truck2.draw(truck2.current_y+1, truck2.current_x);
+          std::this_thread::sleep_for(200ms);
+        }
+        while(truck2.current_y != sugar_barn.current_y+4);
+      }
+      do{
+        truck2.draw(truck2.current_y, truck2.current_x-1);
+        std::this_thread::sleep_for(200ms);
+      }
+      while(truck2.current_x != sugar_barn.current_x);
+
+    }
+  }
 }
 
 void nest_1a() {
-  for(int n = 0; n < 10000; n++){
-    nest1[n % 4].draw(15, 15);
-    std::this_thread::sleep_for(1s);
+  nest1[0].draw(15, 15);
+  int count = 0;
+  while(true){
+    //how to see which nest[] is visible currently?
+    if((chicken1.current_x == nest1[0].current_x && chicken1.current_y == nest1[0].current_y-3) 
+    || (chicken2.current_x == nest1[0].current_x && chicken2.current_y == nest1[0].current_y-3)){
+      if(count < 3){
+        nest1[++count].draw(15, 15);
+        std::this_thread::sleep_for(1s);
+      }
+    }
   }
 }
 
 void nest_2a() {
-  for(int n = 0; n < 10000; n++){
-    nest2[n % 4].draw(15, 35);
-    std::this_thread::sleep_for(1s);
+  nest2[0].draw(15, 35);
+  int count = 0;
+  while(true){
+    if((chicken1.current_x == nest1[0].current_x && chicken1.current_y == nest1[0].current_y-3) 
+    || (chicken2.current_x == nest1[0].current_x && chicken2.current_y == nest1[0].current_y-3)){
+      if(count < 3){
+        nest2[++count].draw(15, 35);
+        std::this_thread::sleep_for(1s);
+      }
+    }
   }
 }
 
@@ -267,12 +370,14 @@ void cupcakes_a() {
   }
 }
 
-void chicken_a(DisplayObject &c) {
+void chicken_a(DisplayObject &c, int num) {
   int y1 = nest1[0].current_y, x1 = nest1[0].current_x;
   int y2 = nest2[0].current_y, x2 = nest2[0].current_x;
-  c.draw(y1-3,x1);
+  if (num == 1) c.draw(y1-3, x1);
+  if (num == 2) c.draw(y2-3, x2);
   while(true){
     if(c.current_x == x1){
+      std::this_thread::sleep_for(3s);
       do{
         c.draw(c.current_y, c.current_x+1);
         std::this_thread::sleep_for(500ms);
@@ -280,6 +385,7 @@ void chicken_a(DisplayObject &c) {
       while(c.current_x != x2);
     }
     else if(c.current_x == x2){
+      std::this_thread::sleep_for(3s);
       do{
         c.draw(c.current_y+1, c.current_x);
         std::this_thread::sleep_for(500ms);
@@ -361,16 +467,18 @@ int main(int argc, char** argv)
 	std::thread flour_t(flour_a);
   std::thread sugar_t(sugar_a);
   std::thread butter_t(butter_a);
-	std::thread truck1_t(truck1_a);
-  std::thread truck2_t(truck2_a);
   std::thread nest_1t(nest_1a);
   std::thread nest_2t(nest_2a);
+  std::thread truck1_t(truck1_a);
+  std::thread truck2_t(truck2_a);
   std::thread cupcakes_t(cupcakes_a);
-  std::thread chicken1_t(chicken_a, std::ref(chicken1));
+  std::thread chicken1_t(chicken_a, std::ref(chicken1), 1);
+  std::thread chicken2_t(chicken_a, std::ref(chicken2), 2);
+
   std::thread mixer_t(mixer_a);
 	while(true){
     redisplay();
-    std::this_thread::sleep_for(500ms);
+    std::this_thread::sleep_for(100ms);
   }
   return 0;
 }
