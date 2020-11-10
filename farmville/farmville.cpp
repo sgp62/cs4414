@@ -141,19 +141,24 @@ DisplayObject truck2("\
   |       |__#\
   -OO----OO-O|", 3);
 
-DisplayObject flour("\
-\\~~~~/#\
-(flour)", 2);
+DisplayObject butter1("[butter]", 2);
+DisplayObject butter2("[butter]", 2);
+DisplayObject butter3("[butter]", 2);
 
-DisplayObject sugar("\
-\\~~~~/#\
-(sugar)", 2);
+DisplayObject flour1("[flour]", 2); //Created new flour/sugar to fit on conveyor belt
+DisplayObject flour2("[flour]", 2);
+DisplayObject flour3("[flour]", 2);
 
-DisplayObject butter("[butter]", 2);
+DisplayObject sugar1("[sugar]", 2);
+DisplayObject sugar2("[sugar]", 2);
+DisplayObject sugar3("[sugar]", 2);
 
-DisplayObject eggs("[OOO]", 2);
+DisplayObject eggs1("[OOO]", 2);
+DisplayObject eggs2("[OOO]", 2);
+DisplayObject eggs3("[OOO]", 2);
 
-DisplayObject batter("[ccc]", 2);
+DisplayObject batter1("[ccc]", 2);
+DisplayObject batter2("[ccc]", 2);
 
 DisplayObject cupcakes[7] = {
 DisplayObject(\
@@ -235,19 +240,168 @@ void child_a() {
 }
 
 void egg_a() {
-  eggs.draw(34, 63);
+  std::string egg_str = "[000]";
+
+  while(true){
+    if(truck1.current_x == bakery.current_x-13 && truck1.current_y == bakery.current_y+4){
+      eggs1.update_contents(egg_str);
+      eggs2.update_contents(egg_str);
+      eggs3.update_contents(egg_str);
+      eggs1.draw(34, 65);
+      do{
+        eggs1.draw(eggs1.current_y, eggs1.current_x+1);
+        std::this_thread::sleep_for(500ms);
+      }
+      while(eggs1.current_x != bakery.current_x+4);
+      eggs2.draw(34, 65);
+      do{
+        eggs2.draw(eggs2.current_y, eggs2.current_x+1);
+        eggs1.draw(eggs1.current_y, eggs1.current_x+1);
+        std::this_thread::sleep_for(500ms);
+      }
+      while(eggs2.current_x != bakery.current_x+4);
+      eggs1.update_contents("");
+      eggs3.draw(34, 65);
+      do{
+        eggs2.draw(eggs2.current_y, eggs2.current_x+1);
+        eggs3.draw(eggs3.current_y, eggs3.current_x+1);
+        std::this_thread::sleep_for(500ms);
+      }
+      while(eggs3.current_x != bakery.current_x+4);
+      eggs2.update_contents("");
+      do{
+        eggs3.draw(eggs3.current_y, eggs3.current_x+1);
+        std::this_thread::sleep_for(500ms);
+      }
+      while(eggs3.current_x != bakery.current_x+13);
+      eggs3.update_contents("");
+    }
+    
+  }
+  
 }
 
 void flour_a() {
-  flour.draw(42, 63);
+  std::string flour_str = "[flour]";
+
+  while(true){
+    if(truck2.current_x == bakery.current_x-13 && truck2.current_y == bakery.current_y+12){
+      flour1.update_contents(flour_str);
+      flour2.update_contents(flour_str);
+      flour3.update_contents(flour_str);
+      flour1.draw(42, 63);
+      do{
+        flour1.draw(flour1.current_y, flour1.current_x+1);
+        std::this_thread::sleep_for(500ms);
+      }
+      while(flour1.current_x != bakery.current_x+2);
+      flour2.draw(42, 63);
+      do{
+        flour2.draw(flour2.current_y, flour2.current_x+1);
+        flour1.draw(flour1.current_y, flour1.current_x+1);
+        std::this_thread::sleep_for(500ms);
+      }
+      while(flour2.current_x != bakery.current_x+2);
+      flour1.update_contents("");
+      flour3.draw(42, 63);
+      do{
+        flour2.draw(flour2.current_y, flour2.current_x+1);
+        flour3.draw(flour3.current_y, flour3.current_x+1);
+        std::this_thread::sleep_for(500ms);
+      }
+      while(flour3.current_x != bakery.current_x+2);
+      flour2.update_contents("");
+      do{
+        flour3.draw(flour3.current_y, flour3.current_x+1);
+        std::this_thread::sleep_for(500ms);
+      }
+      while(flour3.current_x != bakery.current_x+11);
+      flour3.update_contents("");
+    }
+    
+  }
 }
 
 void sugar_a() {
-  sugar.draw(46, 63);
+  std::string sugar_str = "[sugar]";
+
+  while(true){
+    if(truck2.current_x == bakery.current_x-13 && truck2.current_y == bakery.current_y+16){
+      sugar1.update_contents(sugar_str);
+      sugar2.update_contents(sugar_str);
+      sugar3.update_contents(sugar_str);
+      sugar1.draw(46, 63);
+      do{
+        sugar1.draw(sugar1.current_y, sugar1.current_x+1);
+        std::this_thread::sleep_for(500ms);
+      }
+      while(sugar1.current_x != bakery.current_x+2);
+      sugar2.draw(46, 63);
+      do{
+        sugar2.draw(sugar2.current_y, sugar2.current_x+1);
+        sugar1.draw(sugar1.current_y, sugar1.current_x+1);
+        std::this_thread::sleep_for(500ms);
+      }
+      while(sugar2.current_x != bakery.current_x+2);
+      sugar1.update_contents("");
+      sugar3.draw(46, 63);
+      do{
+        sugar2.draw(sugar2.current_y, sugar2.current_x+1);
+        sugar3.draw(sugar3.current_y, sugar3.current_x+1);
+        std::this_thread::sleep_for(500ms);
+      }
+      while(sugar3.current_x != bakery.current_x+2);
+      sugar2.update_contents("");
+      do{
+        sugar3.draw(sugar3.current_y, sugar3.current_x+1);
+        std::this_thread::sleep_for(500ms);
+      }
+      while(sugar3.current_x != bakery.current_x+11);
+      sugar3.update_contents("");
+    }
+    
+  }
 }
 
 void butter_a() {
-  butter.draw(38, 63);
+  std::string butter_str = "[butter]";
+
+  while(true){
+    if(truck1.current_x == bakery.current_x-13 && truck1.current_y == bakery.current_y+8){
+      butter1.update_contents(butter_str);
+      butter2.update_contents(butter_str);
+      butter3.update_contents(butter_str);
+      butter1.draw(38, 62);
+      do{
+        butter1.draw(butter1.current_y, butter1.current_x+1);
+        std::this_thread::sleep_for(500ms);
+      }
+      while(butter1.current_x != bakery.current_x+1);
+      butter2.draw(38, 62);
+      do{
+        butter2.draw(butter2.current_y, butter2.current_x+1);
+        butter1.draw(butter1.current_y, butter1.current_x+1);
+        std::this_thread::sleep_for(500ms);
+      }
+      while(butter2.current_x != bakery.current_x+1);
+      butter1.update_contents("");
+      butter3.draw(38, 62);
+      do{
+        butter2.draw(butter2.current_y, butter2.current_x+1);
+        butter3.draw(butter3.current_y, butter3.current_x+1);
+        std::this_thread::sleep_for(500ms);
+      }
+      while(butter3.current_x != bakery.current_x+1);
+      butter2.update_contents("");
+      do{
+        butter3.draw(butter3.current_y, butter3.current_x+1);
+        std::this_thread::sleep_for(500ms);
+      }
+      while(butter3.current_x != bakery.current_x+10);
+      butter3.update_contents("");
+    }
+    
+  }
 }
 
 void farmer_a() {
@@ -328,7 +482,7 @@ void truck1_a() {
       }
     }
     else if(truck1.current_x == bakery.current_x-13){
-      std::this_thread::sleep_for(3s);
+      std::this_thread::sleep_for(10s);
       do{
         truck1.draw(truck1.current_y, truck1.current_x-1);
         std::this_thread::sleep_for(200ms);
@@ -367,17 +521,27 @@ void truck2_a() {
           truck2.draw(truck2.current_y, truck2.current_x+1);
           std::this_thread::sleep_for(200ms);
         }
-        while(truck2.current_x != bakery.current_x-13);
+        while(truck2.current_x != bakery.current_x-17);
         do{
           truck2.draw(truck2.current_y-1, truck2.current_x);
           std::this_thread::sleep_for(200ms);
         }
         while(truck2.current_y != sugar_barn.current_y);
+        do{
+          truck2.draw(truck2.current_y, truck2.current_x+1);
+          std::this_thread::sleep_for(200ms);
+        }
+        while(truck2.current_x != bakery.current_x-13);
       }
     }
     else if(truck2.current_x == bakery.current_x-13){
-      std::this_thread::sleep_for(3s);
+      std::this_thread::sleep_for(10s);
       if(from == "flour"){
+        do{
+          truck2.draw(truck2.current_y, truck2.current_x-1);
+          std::this_thread::sleep_for(200ms);
+        }
+        while(truck2.current_x != bakery.current_x-17);
         do{
           truck2.draw(truck2.current_y+1, truck2.current_x);
           std::this_thread::sleep_for(200ms);
@@ -526,7 +690,7 @@ void mixer_a() {
 			mixer_contents.update_contents(mixer_string);
 			mixer_contents.draw(46, 92);
 			// This draws a picture of batter in the oven... but never erases it.
-			batter.draw(39, 94);
+			batter1.draw(39, 94);
 			baked = true;
 		}
 		else
