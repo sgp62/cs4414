@@ -1,7 +1,9 @@
 #include <iostream>
+#include <shared_mutex>
 #include "displayobject.hpp"
 
 char DisplayObject::theFarm[NLINES][LINELEN][NLAYERS];
+std::shared_mutex DisplayObject::mtx;
 
 DisplayObject::DisplayObject(const std::string& str, const int n)
 {
@@ -70,6 +72,7 @@ void DisplayObject::draw(int y, int x, char c)
 {
 	if(y < 1 || x < 1 || y >= NLINES || x >= LINELEN)
 		return;
+	std::shared_lock shared_lock(mtx);
 	theFarm[y][x][layer] = c;
 }
 
@@ -120,6 +123,7 @@ void DisplayObject::erase()
 
 void DisplayObject::redisplay()
 {
+	std::unique_lock unique_lock(mtx);
 	std::string toDisplay("\033[1;1H");
 	toDisplay += '|';
 	for(int c = 0; c < LINELEN; c++)

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <shared_mutex>
 
 class DisplayObject {
 public:
@@ -19,6 +20,7 @@ public:
 	static void redisplay();
 
 private:
+	static std::shared_mutex mtx;
 	static const int LINELEN = 140;
 	static const int NLINES = 60;
 	static const int NLAYERS = 4;

@@ -4,6 +4,7 @@
 #include <thread>
 #include <chrono>
 #include <string>
+#include <shared_mutex>
 using namespace std::chrono_literals;
 //
 //  "Background" objects are in layer 0: barn, nest, bakery.
@@ -759,6 +760,9 @@ void cupcakes_a() {
       baked2 = true;
     }
     std::this_thread::sleep_for(1s);
+    cupcakes[0].draw(35, 100);
+    baked1 = false;
+    baked2 = false;
 
   }
 }
