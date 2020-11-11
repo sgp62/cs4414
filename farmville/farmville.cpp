@@ -88,7 +88,27 @@ DisplayObject farmer("\
 /(~)\\#\
  ! !", 1);
 
-DisplayObject child("\
+DisplayObject child1("\
+  *#\
+ /()\\#\
+  !!", 1);
+
+  DisplayObject child2("\
+  *#\
+ /()\\#\
+  !!", 1);
+
+  DisplayObject child3("\
+  *#\
+ /()\\#\
+  !!", 1);
+
+  DisplayObject child4("\
+  *#\
+ /()\\#\
+  !!", 1);
+
+  DisplayObject child5("\
   *#\
  /()\\#\
   !!", 1);
@@ -123,8 +143,8 @@ DisplayObject bakery("\
 |o   o   o   o   o                 |#\
                                    |#\
                                    |#\
- =================  (      )       |#\
-|o   o   o   o   o   (____)        |#\
+ =================   (     )       |#\
+|o   o   o   o   o   (     )       |#\
 |                     mixer        |#\
 |                                  |#\
 |                                  |#\
@@ -235,9 +255,6 @@ void cow_a() {
   cow.draw(26, 63);
 }
 
-void child_a() {
-  child.draw(30, 120);
-}
 
 void egg_a() {
   std::string egg_str = "[000]";
@@ -616,15 +633,6 @@ void nest_3a() {
   }
 }
 
-
-void cupcakes_a() {
-  for(int n = 0; n < 10000; n++){
-    cupcakes[n % 7].draw(35, 100);
-    std::this_thread::sleep_for(1s);
-
-  }
-}
-
 void chicken_a(DisplayObject &c, int num) {
   int y1 = nest1[0].current_y, x1 = nest1[0].current_x;
   int y2 = nest2[0].current_y, x2 = nest2[0].current_x;
@@ -665,57 +673,165 @@ void chicken_a(DisplayObject &c, int num) {
       while(c.current_y != y1-3);
     }
   }
-	/*int y = 10, oldy = 10, x = 10, oldx = 10;
-  for(int n = 0; n < 10000; n++){
-    y = std::max(1, y + (1+std::rand()) % 10 - 5);
-    x = std::max(1, x + (1+std::rand()) % 10 - 5);
-    chicken1.draw(oldy = y, oldx = x);
-    std::this_thread::sleep_for(500ms);
-  }*/
 }
 
+//batter1.draw(39, 94);
+
 void mixer_a() {
-  bool baked = false;
 	std::string mixer_string;
 	DisplayObject mixer_contents(mixer_string, 3);
   int mc = 0;
-	for(int n = 0; n < 10000; n++)
+	while(true)
 	{
-		if(mc == 0xF)
+		if(mc == 0xFF)
 		{	
 			// All the batter ingredients are in the mixer!  Mix them, then
 			// clear the contents for the next batch (in fact we really should do more: see hw3 assignment).
 			mc = 0;
-			mixer_string = "";
+      mixer_string = "";
 			mixer_contents.update_contents(mixer_string);
-			mixer_contents.draw(46, 92);
-			// This draws a picture of batter in the oven... but never erases it.
-			batter1.draw(39, 94);
-			baked = true;
+			mixer_contents.draw(47, 92);
+      batter1.draw(47, 92);
+      batter2.draw(46, 92);
+      std::this_thread::sleep_for(1s);
+      batter1.draw(39, 94);
+      std::this_thread::sleep_for(4s);
+      batter1.update_contents("");
+      batter2.draw(39, 94);
+      std::this_thread::sleep_for(4s);
+      batter2.update_contents("");
+
 		}
 		else
 		{
-			mc |= std::rand()&0xF;
-			mixer_string = (mc & 0x1)? "E": " ";
-			mixer_string += "  ";
-			mixer_string += (mc & 0x2)? "B": " ";
+      batter1.update_contents("[ccc]");
+      batter2.update_contents("[ccc]");
+      mixer_string = "";
+      //set the elements
+      if(eggs1.current_x == bakery.current_x+13) mc = mc | 0x1;
+      if(eggs2.current_x == bakery.current_x+13) mc = mc | 0x2;
+      if(butter1.current_x == bakery.current_x+10) mc = mc | 0x4;
+      if(butter2.current_x == bakery.current_x+10) mc = mc | 0x8;
+      if(flour1.current_x == bakery.current_x+11) mc = mc | 0x10;
+      if(flour2.current_x == bakery.current_x+11) mc = mc | 0x20;
+      if(sugar1.current_x == bakery.current_x+11) mc = mc | 0x40;
+      if(sugar2.current_x == bakery.current_x+11) mc = mc | 0x80;
+      //make the string
+      mixer_string = (mc & 0x01)? "E": " ";
+			mixer_string +=(mc & 0x02)? "E": " ";
+			mixer_string += (mc & 0x04)? "B": " ";
+			mixer_string += (mc & 0x08)? "B": " ";
 			mixer_string += "#";
-			mixer_string += (mc & 0x4)? " F": "  ";
-			mixer_string += (mc & 0x8)? "S": " ";
-			mixer_contents.update_contents(mixer_string);
-			mixer_contents.draw(46, 92);
-			if(baked && (n % 6) == 5)
-			{
-				baked = false;
-			}
+			mixer_string += (mc & 0x10)? "F": " ";
+			mixer_string += (mc & 0x20)? "F": " ";
+			mixer_string += (mc & 0x40)? "S": " ";
+			mixer_string += (mc & 0x80)? "S": " ";
+      
+      mixer_contents.update_contents(mixer_string);
+      mixer_contents.draw(47, 92);
     }
-    std::this_thread::sleep_for(1s);
+    std::this_thread::sleep_for(200ms);
   }
 }
-// Below is a totally fake main method that simply puts some of the icons on the screen to illustrate various options
-// It moves the chicken around randomly (if it goes "into" the barn, it vanishes because the barn is in a higher layer).
-// It also illustrates how you can generate a string and turn it into a display object that will vanish after a little while
-// when that object goes out of scope and the deconstructor executes.
+
+
+void cupcakes_a() {
+  bool baked1 = false;
+  bool baked2 = false;
+  cupcakes[0].draw(35, 100);
+  while(true){
+    if(batter1.current_y == 39 && !baked1){
+      cupcakes[1].draw(35, 100);
+      std::this_thread::sleep_for(1s);
+      cupcakes[2].draw(35, 100);
+      std::this_thread::sleep_for(1s);
+      cupcakes[3].draw(35, 100);
+      std::this_thread::sleep_for(1s);
+      baked1 = true;
+    }
+    if(batter2.current_y == 39 && !baked2){
+      cupcakes[4].draw(35, 100);
+      std::this_thread::sleep_for(1s);
+      cupcakes[5].draw(35, 100);
+      std::this_thread::sleep_for(1s);
+      cupcakes[6].draw(35, 100);
+      std::this_thread::sleep_for(1s);
+      baked2 = true;
+    }
+    std::this_thread::sleep_for(1s);
+
+  }
+}
+
+void move_to(DisplayObject &c, int dx, int dy, bool yfirst){
+  if(yfirst){
+    if(c.current_y > dy){
+      do{
+        c.draw(c.current_y-1, c.current_x);
+        std::this_thread::sleep_for(100ms);
+      }
+      while(c.current_y > dy);
+    }
+    else if (c.current_y < dy) {
+      do{
+        c.draw(c.current_y+1, c.current_x);
+        std::this_thread::sleep_for(100ms);
+      }
+      while(c.current_y < dy);
+    }
+  }
+  if(c.current_x > dx){
+    do{
+      c.draw(c.current_y, c.current_x-1);
+      std::this_thread::sleep_for(100ms);
+    }
+    while(c.current_x > dx);
+  }
+  else if (c.current_x < dx) {
+    do{
+      c.draw(c.current_y, c.current_x+1);
+      std::this_thread::sleep_for(100ms);
+    }
+    while(c.current_x < dx);
+  }
+  if(!yfirst){
+    if(c.current_y > dy){
+      do{
+        c.draw(c.current_y-1, c.current_x);
+        std::this_thread::sleep_for(100ms);
+      }
+      while(c.current_y > dy);
+    }
+    else if (c.current_y < dy) {
+      do{
+        c.draw(c.current_y+1, c.current_x);
+        std::this_thread::sleep_for(100ms);
+      }
+      while(c.current_y < dy);
+    }
+  }
+}
+
+void child_a(DisplayObject &c, int num) {
+  if(num == 1) c.draw(28, 120);
+  if(num == 2) c.draw(32, 125);
+  if(num == 3) c.draw(36, 130);
+  if(num == 4) c.draw(40, 125);
+  if(num == 5) c.draw(44, 120);
+  int xo = c.current_x, yo = c.current_y;
+  int who = 0; //this will need to be synchronized so only one
+  while(true){
+    who |= std::rand()&0x5;
+    if(who == num){
+      move_to(c, cupcakes[0].current_x+10, cupcakes[0].current_y, true);
+      std::this_thread::sleep_for(2s);
+      move_to(c, xo, yo, false);
+    }
+    std::this_thread::sleep_for(3s);
+    who = 0;
+  }
+  
+}
 
 int main(int argc, char** argv)
 {	
@@ -724,7 +840,6 @@ int main(int argc, char** argv)
   std::thread bakery_t(bakery_a);
   std::thread cow_t(cow_a);
   std::thread farmer_t(farmer_a);
-  std::thread child_t(child_a);
   std::thread egg_t(egg_a);
 	std::thread flour_t(flour_a);
   std::thread sugar_t(sugar_a);
@@ -737,6 +852,11 @@ int main(int argc, char** argv)
   std::thread cupcakes_t(cupcakes_a);
   std::thread chicken1_t(chicken_a, std::ref(chicken1), 1);
   std::thread chicken2_t(chicken_a, std::ref(chicken2), 2);
+  std::thread child1_t(child_a, std::ref(child1), 1);
+  std::thread child2_t(child_a, std::ref(child2), 2);
+  std::thread child3_t(child_a, std::ref(child3), 3);
+  std::thread child4_t(child_a, std::ref(child4), 4);
+  std::thread child5_t(child_a, std::ref(child5), 5);
 
   std::thread mixer_t(mixer_a);
 	while(true){
