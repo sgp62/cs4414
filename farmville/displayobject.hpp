@@ -17,11 +17,12 @@ public:
 	DisplayObject(const DisplayObject&);
 	~DisplayObject();
 	void update_contents(const std::string&);
-	void draw(int, int);
+	void draw(int, int, int lasttick = -1, int numticks = 1);
 	static void redisplay();
 
 
 private:
+	static int tick;
 	static std::condition_variable_any want_rw;
 	static std::shared_mutex mtx;
 	static const int LINELEN = 140;

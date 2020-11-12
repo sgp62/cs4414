@@ -10,6 +10,7 @@ std::shared_mutex DisplayObject::mtx;
 std::condition_variable_any DisplayObject::want_rw;
 int active_readers, writers_waiting;
 bool active_writer;
+int DisplayObject::tick = 0;
 
 DisplayObject::DisplayObject(const std::string& str, const int n)
 {
@@ -83,11 +84,12 @@ void DisplayObject::draw(int y, int x, char c)
 	theFarm[y][x][layer] = c;
 }
 
-void DisplayObject::draw(int y, int x)
+void DisplayObject::draw(int y, int x, int lasttick, int numticks)
 {
+	if(lasttick == -1) lasttick = tick;
 	std::shared_lock shared_lock(mtx);
-	want_rw.wait(shared_lock, [&]() { return !(active_writer); });
-	++active_readers;
+	want_rw.wait(shared_lock, [&]() { return (tick >= lasttick+numticks); });
+
 	if(current_x != 0 && current_y != 0)
 	{
 		erase();
@@ -164,7 +166,7 @@ void DisplayObject::redisplay()
 		toDisplay += '_';
 	toDisplay += "|\n";
 	std::cout << toDisplay << std::endl;
-
+	tick++;
 	active_writer = false;
 	want_rw.notify_all();
 
