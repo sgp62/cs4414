@@ -1,9 +1,15 @@
 #include <iostream>
 #include <shared_mutex>
+#include <mutex>
 #include "displayobject.hpp"
+#include <condition_variable>
 
 char DisplayObject::theFarm[NLINES][LINELEN][NLAYERS];
 std::shared_mutex DisplayObject::mtx;
+
+std::condition_variable_any DisplayObject::want_rw;
+int active_readers, writers_waiting;
+bool active_writer;
 
 DisplayObject::DisplayObject(const std::string& str, const int n)
 {
@@ -72,12 +78,16 @@ void DisplayObject::draw(int y, int x, char c)
 {
 	if(y < 1 || x < 1 || y >= NLINES || x >= LINELEN)
 		return;
-	std::shared_lock shared_lock(mtx);
+
+
 	theFarm[y][x][layer] = c;
 }
 
 void DisplayObject::draw(int y, int x)
 {
+	std::shared_lock shared_lock(mtx);
+	want_rw.wait(shared_lock, [&]() { return !(active_writer); });
+	++active_readers;
 	if(current_x != 0 && current_y != 0)
 	{
 		erase();
@@ -99,6 +109,7 @@ void DisplayObject::draw(int y, int x)
 		}
 	}
 }
+
 
 void DisplayObject::erase()
 {
@@ -123,7 +134,10 @@ void DisplayObject::erase()
 
 void DisplayObject::redisplay()
 {
+	
 	std::unique_lock unique_lock(mtx);
+	active_writer = true;
+
 	std::string toDisplay("\033[1;1H");
 	toDisplay += '|';
 	for(int c = 0; c < LINELEN; c++)
@@ -150,4 +164,8 @@ void DisplayObject::redisplay()
 		toDisplay += '_';
 	toDisplay += "|\n";
 	std::cout << toDisplay << std::endl;
+
+	active_writer = false;
+	want_rw.notify_all();
+
 }

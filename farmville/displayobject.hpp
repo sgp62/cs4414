@@ -1,5 +1,6 @@
 #include <iostream>
 #include <shared_mutex>
+#include <mutex>
 
 class DisplayObject {
 public:
@@ -19,7 +20,9 @@ public:
 	void draw(int, int);
 	static void redisplay();
 
+
 private:
+	static std::condition_variable_any want_rw;
 	static std::shared_mutex mtx;
 	static const int LINELEN = 140;
 	static const int NLINES = 60;
