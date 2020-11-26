@@ -10,6 +10,8 @@ public:
 	int  current_x;
 	int  current_y;
 	std::string image;
+	std::shared_mutex cpos;
+	std::condition_variable_any wait_cpos;
 
 	void moveto(int, int);
 
@@ -19,6 +21,7 @@ public:
 	void update_contents(const std::string&);
 	void draw(int, int, int lasttick = -1, int numticks = 1);
 	static void redisplay();
+	void move_to(int, int, bool, int, int);
 
 
 private:

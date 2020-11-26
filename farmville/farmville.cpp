@@ -239,22 +239,57 @@ void redisplay()
                      " Flour: Sold=" << flour_produced << ", Used=" << flour_used << 
                      " Cakes: Baked=" << cakes_produced << ", Sold=" << cakes_sold << std::endl;
 }
-
-void egg_barn_a() {
-  egg_barn.draw(30,30);
+/*
+void move_to(DisplayObject &c, int dx, int dy, bool yfirst, int lt, int nt){
+  int lasttick = lt;
+  if(yfirst){
+    if(c.current_y > dy){
+      do{
+        c.draw(c.current_y-1, c.current_x, lasttick, nt);
+        lasttick+= nt;
+      }
+      while(c.current_y > dy);
+    }
+    else if (c.current_y < dy) {
+      do{
+        c.draw(c.current_y+1, c.current_x, lasttick, nt);
+        lasttick+= nt;
+      }
+      while(c.current_y < dy);
+    }
+  }
+  if(c.current_x > dx){
+    do{
+      c.draw(c.current_y, c.current_x-1, lasttick, nt);
+      lasttick+= nt;
+    }
+    while(c.current_x > dx);
+  }
+  else if (c.current_x < dx) {
+    do{
+      c.draw(c.current_y, c.current_x+1, lasttick, nt);
+      lasttick+= nt;
+    }
+    while(c.current_x < dx);
+  }
+  if(!yfirst){
+    if(c.current_y > dy){
+      do{
+        c.draw(c.current_y-1, c.current_x, lasttick, nt);
+        lasttick+= nt;
+      }
+      while(c.current_y > dy);
+    }
+    else if (c.current_y < dy) {
+      do{
+        c.draw(c.current_y+1, c.current_x, lasttick, nt);
+        lasttick+= nt;
+      }
+      while(c.current_y < dy);
+    }
+  }
 }
-
-void sugar_barn_a() {
-  sugar_barn.draw(42,30);
-}
-
-void bakery_a() {
-  bakery.draw(30, 70);
-}
-
-void cow_a() {
-  cow.draw(26, 63);
-}
+*/
 
 
 void egg_a() {
@@ -268,11 +303,35 @@ void egg_a() {
     eggs3.update_contents(egg_str);
     eggs1.draw(34, 65, lasttick, 1);
     lasttick++;
+
+    std::shared_lock readpos_lock(bakery.cpos);
+    bakery.wait_cpos.wait(readpos_lock, [&](){
+      std::cout << "Here" << std::endl;
+      return bakery.current_x != 0;
+    });
+    eggs1.move_to(bakery.current_x+4, eggs1.current_y, false, lasttick, numticks);
+    eggs2.draw(34, 65, lasttick, 1);
+    lasttick++;
+    std::cout << bakery.current_x << std::endl;
+    eggs1.move_to(bakery.current_x+13, eggs1.current_y, false, lasttick, numticks);
+    eggs2.move_to(bakery.current_x+4, eggs2.current_y, false, lasttick, numticks);
+    
+    eggs1.update_contents("");
+
+    eggs3.draw(34, 65, lasttick, 1);
+    lasttick++;
+    eggs1.move_to(bakery.current_x+13, eggs2.current_y, false, lasttick, numticks);
+    eggs3.move_to(bakery.current_x+4, eggs3.current_y, false, lasttick, numticks);
+    eggs2.update_contents("");
+    eggs3.move_to(bakery.current_x+13, eggs3.current_y, false, lasttick, numticks);
+    eggs3.update_contents("");
+    /*
     do{
       eggs1.draw(eggs1.current_y, eggs1.current_x+1, lasttick, numticks);
       lasttick += numticks;
     }
     while(eggs1.current_x != bakery.current_x+4);
+    
     eggs2.draw(34, 65, lasttick, 1);
     lasttick++;
     do{
@@ -297,7 +356,7 @@ void egg_a() {
     }
     while(eggs3.current_x != bakery.current_x+13);
     eggs3.update_contents("");
-    
+    */
   }
   
 }
@@ -815,55 +874,7 @@ void cupcakes_a() {
   }
 }
 
-void move_to(DisplayObject &c, int dx, int dy, bool yfirst, int lt){
-  int lasttick = lt;
-  if(yfirst){
-    if(c.current_y > dy){
-      do{
-        c.draw(c.current_y-1, c.current_x, lasttick);
-        lasttick++;
-      }
-      while(c.current_y > dy);
-    }
-    else if (c.current_y < dy) {
-      do{
-        c.draw(c.current_y+1, c.current_x, lasttick);
-        lasttick++;
-      }
-      while(c.current_y < dy);
-    }
-  }
-  if(c.current_x > dx){
-    do{
-      c.draw(c.current_y, c.current_x-1, lasttick);
-      lasttick++;
-    }
-    while(c.current_x > dx);
-  }
-  else if (c.current_x < dx) {
-    do{
-      c.draw(c.current_y, c.current_x+1, lasttick);
-      lasttick++;
-    }
-    while(c.current_x < dx);
-  }
-  if(!yfirst){
-    if(c.current_y > dy){
-      do{
-        c.draw(c.current_y-1, c.current_x, lasttick);
-        lasttick++;
-      }
-      while(c.current_y > dy);
-    }
-    else if (c.current_y < dy) {
-      do{
-        c.draw(c.current_y+1, c.current_x, lasttick);
-        lasttick++;
-      }
-      while(c.current_y < dy);
-    }
-  }
-}
+
 
 void child_a(DisplayObject &c, int num) {
   int lasttick = 0, numticks = 10;
@@ -877,10 +888,10 @@ void child_a(DisplayObject &c, int num) {
   while(true){
     who |= std::rand()&0x5;
     if(who == num){
-      move_to(c, 110, 35, true, lasttick);
+      c.move_to(110, 35, true, lasttick, 1);
       c.draw(c.current_y, c.current_x, lasttick, 2*numticks);
       lasttick+= 2*numticks;
-      move_to(c, xo, yo, false, lasttick);
+      c.move_to(xo, yo, false, lasttick, 1);
     }
     c.draw(c.current_y, c.current_x, lasttick, 3*numticks);
     lasttick+= 3*numticks;
@@ -891,16 +902,20 @@ void child_a(DisplayObject &c, int num) {
 
 int main(int argc, char** argv)
 {	
+  std::thread consts_t( [&]() { 
+    egg_barn.draw(30,30);
+    sugar_barn.draw(42,30);
+    std::unique_lock(bakery.cpos);
+    bakery.draw(30, 70);
+    bakery.wait_cpos.notify_all();
+    cow.draw(26, 63);
+  });
   std::thread farmer_t(farmer_a);
-  std::thread egg_barn_t(egg_barn_a);
   std::thread truck1_t(truck1_a);
   std::thread truck2_t(truck2_a);
   std::thread nest_1t(nest_1a);
   std::thread nest_2t(nest_2a);
   std::thread nest_3t(nest_3a);
-  std::thread cow_t(cow_a);
-  std::thread sugar_barn_t(sugar_barn_a);
-  std::thread bakery_t(bakery_a);
   std::thread egg_t(egg_a);
 	std::thread flour_t(flour_a);
   std::thread sugar_t(sugar_a);
