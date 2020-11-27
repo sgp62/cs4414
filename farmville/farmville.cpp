@@ -239,62 +239,16 @@ void redisplay()
                      " Flour: Sold=" << flour_produced << ", Used=" << flour_used << 
                      " Cakes: Baked=" << cakes_produced << ", Sold=" << cakes_sold << std::endl;
 }
-/*
-void move_to(DisplayObject &c, int dx, int dy, bool yfirst, int lt, int nt){
-  int lasttick = lt;
-  if(yfirst){
-    if(c.current_y > dy){
-      do{
-        c.draw(c.current_y-1, c.current_x, lasttick, nt);
-        lasttick+= nt;
-      }
-      while(c.current_y > dy);
-    }
-    else if (c.current_y < dy) {
-      do{
-        c.draw(c.current_y+1, c.current_x, lasttick, nt);
-        lasttick+= nt;
-      }
-      while(c.current_y < dy);
-    }
-  }
-  if(c.current_x > dx){
-    do{
-      c.draw(c.current_y, c.current_x-1, lasttick, nt);
-      lasttick+= nt;
-    }
-    while(c.current_x > dx);
-  }
-  else if (c.current_x < dx) {
-    do{
-      c.draw(c.current_y, c.current_x+1, lasttick, nt);
-      lasttick+= nt;
-    }
-    while(c.current_x < dx);
-  }
-  if(!yfirst){
-    if(c.current_y > dy){
-      do{
-        c.draw(c.current_y-1, c.current_x, lasttick, nt);
-        lasttick+= nt;
-      }
-      while(c.current_y > dy);
-    }
-    else if (c.current_y < dy) {
-      do{
-        c.draw(c.current_y+1, c.current_x, lasttick, nt);
-        lasttick+= nt;
-      }
-      while(c.current_y < dy);
-    }
-  }
-}
-*/
 
 
 void egg_a() {
   int lasttick = 0, numticks = 5;
   std::string egg_str = "[000]";
+
+  std::shared_lock readpos_lock(bakery.cpos);
+  bakery.wait_cpos.wait(readpos_lock, [&](){
+    return bakery.current_x != 0;
+  });
 
   while(true){
     //if(truck1.current_x == bakery.current_x-13 && truck1.current_y == bakery.current_y+4){
@@ -304,10 +258,7 @@ void egg_a() {
     eggs1.draw(34, 65, lasttick, 1);
     lasttick++;
 
-    std::shared_lock readpos_lock(bakery.cpos);
-    bakery.wait_cpos.wait(readpos_lock, [&](){
-      return bakery.current_x != 0;
-    });
+
     int bx = bakery.current_x;
 
     eggs1.move_to(eggs1.current_y, bx+4, false, lasttick, numticks);
@@ -340,23 +291,23 @@ void egg_a() {
 void flour_a() {
   int lasttick = 0, numticks = 5;
   std::string flour_str = "[flour]";
+  std::shared_lock readpos_lock(bakery.cpos);
+  bakery.wait_cpos.wait(readpos_lock, [&](){
+    return bakery.current_x != 0;
+  });
+  int bx = bakery.current_x;
 
   while(true){
     //if(truck2.current_x == bakery.current_x-13 && truck2.current_y == bakery.current_y+12){
     flour1.update_contents(flour_str);
     flour2.update_contents(flour_str);
     flour3.update_contents(flour_str);
-    flour1.draw(42, 63, lasttick, 1);
+    flour1.draw(38, 63, lasttick, 1);
     lasttick++;
 
-    std::shared_lock readpos_lock(bakery.cpos);
-    bakery.wait_cpos.wait(readpos_lock, [&](){
-      return bakery.current_x != 0;
-    });
-    int bx = bakery.current_x;
 
     flour1.move_to(flour1.current_y, bx+2, false, lasttick, numticks);
-    flour2.draw(42, 63, lasttick, 1);
+    flour2.draw(38, 63, lasttick, 1);
     lasttick++;
     int temptick = lasttick;
     std::thread t1( [&]{ flour1.move_to(flour1.current_y, bx+11, false, temptick, numticks); });
@@ -365,7 +316,7 @@ void flour_a() {
     flour1.update_contents("");
     lasttick++;
 
-    flour3.draw(42, 63, lasttick, 1);
+    flour3.draw(38, 63, lasttick, 1);
     lasttick++;
 
     temptick = lasttick;
@@ -384,6 +335,11 @@ void flour_a() {
 void sugar_a() {
   int lasttick = 0, numticks = 5;
   std::string sugar_str = "[sugar]";
+  std::shared_lock readpos_lock(bakery.cpos);
+  bakery.wait_cpos.wait(readpos_lock, [&](){
+    return bakery.current_x != 0;
+  });
+  int bx = bakery.current_x;
 
   while(true){
     //if(truck2.current_x == bakery.current_x-13 && truck2.current_y == bakery.current_y+16){
@@ -393,11 +349,6 @@ void sugar_a() {
     sugar1.draw(46, 63, lasttick, 1);
     lasttick++;
 
-    std::shared_lock readpos_lock(bakery.cpos);
-    bakery.wait_cpos.wait(readpos_lock, [&](){
-      return bakery.current_x != 0;
-    });
-    int bx = bakery.current_x;
 
     sugar1.move_to(sugar1.current_y, bx+2, false, lasttick, numticks);
     sugar2.draw(46, 63, lasttick, 1);
@@ -427,23 +378,23 @@ void sugar_a() {
 void butter_a() {
   int lasttick = 0, numticks = 5;
   std::string butter_str = "[butter]";
+  std::shared_lock readpos_lock(bakery.cpos);
+  bakery.wait_cpos.wait(readpos_lock, [&](){
+    return bakery.current_x != 0;
+  });
+  int bx = bakery.current_x;
+
 
   while(true){
     //if(truck1.current_x == bakery.current_x-13 && truck1.current_y == bakery.current_y+8){
     butter1.update_contents(butter_str);
     butter2.update_contents(butter_str);
     butter3.update_contents(butter_str);
-    butter1.draw(38, 62, lasttick, 1);
+    butter1.draw(42, 62, lasttick, 1);
     lasttick++;
 
-    std::shared_lock readpos_lock(bakery.cpos);
-    bakery.wait_cpos.wait(readpos_lock, [&](){
-      return bakery.current_x != 0;
-    });
-    int bx = bakery.current_x;
-
     butter1.move_to(butter1.current_y, bx+1, false, lasttick, numticks);
-    butter2.draw(38, 62, lasttick, 1);
+    butter2.draw(42, 62, lasttick, 1);
     lasttick++;
     int temptick = lasttick;
     std::thread t1( [&]{ butter1.move_to(butter1.current_y, bx+10, false, temptick, numticks); });
@@ -452,7 +403,7 @@ void butter_a() {
     butter1.update_contents("");
     lasttick++;
 
-    butter3.draw(38, 62, lasttick, 1);
+    butter3.draw(42, 62, lasttick, 1);
     lasttick++;
 
     temptick = lasttick;
@@ -471,57 +422,32 @@ void farmer_a() {
   int numticks = 2, lasttick = 0;
   farmer.draw(30, 27, lasttick, 1);
   lasttick += 1;
+  std::shared_lock readpos_lock(egg_barn.cpos);
+  egg_barn.wait_cpos.wait(readpos_lock, [&](){
+    return egg_barn.current_x != 0;
+  });
   while(true){
     if(farmer.current_x == egg_barn.current_x-3){
       farmer.draw(30, 27, lasttick, numticks*10);
       lasttick += numticks*10;
-      do{
-        farmer.draw(farmer.current_y, farmer.current_x-1, lasttick, numticks);
-        lasttick += numticks;
-      } 
-      while(farmer.current_x != nest1[0].current_x);
-      do{
-        farmer.draw(farmer.current_y-1, farmer.current_x, lasttick, numticks);
-        lasttick += numticks;
-      }
-      while(farmer.current_y != nest1[0].current_y+2);
+
+      farmer.move_to(nest1[0].current_y+2, nest1[0].current_x, false, lasttick, numticks);
       farmer.draw(farmer.current_y, farmer.current_x, lasttick, numticks*5);
       lasttick += numticks*5;
 
-      do{
-        farmer.draw(farmer.current_y, farmer.current_x+1, lasttick, numticks);
-        lasttick += numticks;
-      }
-      while(farmer.current_x != nest2[0].current_x);
+      farmer.move_to(farmer.current_y, nest2[0].current_x, false, lasttick, numticks);
       farmer.draw(farmer.current_y, farmer.current_x, lasttick, numticks*5);
       lasttick += numticks*5;
 
-      do{
-        farmer.draw(farmer.current_y, farmer.current_x+1, lasttick, numticks);
-        lasttick += numticks;
-      }
-      while(farmer.current_x != nest3[0].current_x+3);
+      farmer.move_to(farmer.current_y, nest3[0].current_x+3, false, lasttick, numticks);
       farmer.draw(farmer.current_y, farmer.current_x, lasttick, numticks*5);
       lasttick += numticks*5;
 
-      do{
-        farmer.draw(farmer.current_y+1, farmer.current_x, lasttick, numticks);
-        lasttick += numticks;
-      }
-      while(farmer.current_y != cow.current_y);
+      farmer.move_to(cow.current_y, farmer.current_x, false, lasttick, numticks);
       farmer.draw(farmer.current_y, farmer.current_x, lasttick, numticks*25);
       lasttick += numticks*25;
 
-      do{
-        farmer.draw(farmer.current_y, farmer.current_x-1, lasttick, numticks);
-        lasttick += numticks;
-      }
-      while(farmer.current_x != egg_barn.current_x-3);
-      do{
-        farmer.draw(farmer.current_y+1, farmer.current_x, lasttick, numticks);
-        lasttick += numticks;
-      }
-      while(farmer.current_y != egg_barn.current_y);
+      farmer.move_to(egg_barn.current_y, egg_barn.current_x-3, false, lasttick, numticks);
     }
   }
 }
@@ -531,48 +457,33 @@ void truck1_a() {
   truck1.draw(34, 30, lasttick, 1);
   lasttick++;
   std::string from = "start";
+  std::shared_lock readpos_lock(egg_barn.cpos);
+  egg_barn.wait_cpos.wait(readpos_lock, [&](){
+    return egg_barn.current_x != 0;
+  });
+
+
   while(true){
     if(truck1.current_x == egg_barn.current_x){
       truck1.draw(truck1.current_y, truck1.current_x, lasttick, numticks * 15);
       lasttick+= numticks*15;
       if(from == "start" || from == "butter"){
         from = "eggs";
-        do{
-          truck1.draw(truck1.current_y, truck1.current_x+1, lasttick, numticks);
-          lasttick += numticks;
-        }
-        while(truck1.current_x != bakery.current_x-13);
+        truck1.move_to(truck1.current_y, bakery.current_x-13, false, lasttick, numticks);
       }
       else if(from == "eggs"){
         from = "butter";
-        do{
-          truck1.draw(truck1.current_y+1, truck1.current_x, lasttick, numticks);
-          lasttick += numticks;
-        }
-        while(truck1.current_y != bakery.current_y+8);
-        do{
-          truck1.draw(truck1.current_y, truck1.current_x+1, lasttick, numticks);
-          lasttick += numticks;
-        }
-        while(truck1.current_x != bakery.current_x-13);
+        truck1.move_to(bakery.current_y+12, bakery.current_x-25, false, lasttick, numticks);
+        truck1.move_to(truck1.current_y, bakery.current_x-13, true, lasttick, numticks);
       }
     }
     else if(truck1.current_x == bakery.current_x-13){
       truck1.draw(truck1.current_y, truck1.current_x, lasttick, numticks * 50);
       lasttick += numticks*50;
-      do{
-        truck1.draw(truck1.current_y, truck1.current_x-1, lasttick, numticks);
-        lasttick += numticks;
-      }
-      while(truck1.current_x != egg_barn.current_x);
       if(from == "butter"){
-        do{
-          truck1.draw(truck1.current_y-1, truck1.current_x, lasttick, numticks);
-          lasttick += numticks;
-        }
-        while(truck1.current_y != egg_barn.current_y+4);
+        truck1.move_to(egg_barn.current_y+4, bakery.current_x-25, false, lasttick, numticks);
       }
-
+      truck1.move_to(truck1.current_y, egg_barn.current_x, false, lasttick, numticks);
     }
   }
 }
@@ -583,58 +494,31 @@ void truck2_a() {
   truck2.draw(46, 30, lasttick, 1);
   lasttick++;
   std::string from = "start";
+  std::shared_lock readpos_lock(sugar_barn.cpos);
+  sugar_barn.wait_cpos.wait(readpos_lock, [&](){
+    return sugar_barn.current_x != 0;
+  });
   while(true){
     if(truck2.current_x == sugar_barn.current_x){
-      truck1.draw(truck1.current_y, truck1.current_x, lasttick, numticks * 15);
+      truck2.draw(truck2.current_y, truck2.current_x, lasttick, numticks * 15);
       lasttick+= numticks*15;
       if(from == "start" || from == "flour"){
         from = "sugar";
-        do{
-          truck2.draw(truck2.current_y, truck2.current_x+1, lasttick, numticks);
-          lasttick += numticks;
-        }
-        while(truck2.current_x != bakery.current_x-13);
+        truck2.move_to(truck2.current_y, bakery.current_x-13, false, lasttick, numticks);
       }
       else if(from == "sugar"){
         from = "flour";
-        do{
-          truck2.draw(truck2.current_y, truck2.current_x+1, lasttick, numticks);
-          lasttick += numticks;
-        }
-        while(truck2.current_x != bakery.current_x-17);
-        do{
-          truck2.draw(truck2.current_y-1, truck2.current_x, lasttick, numticks);
-          lasttick += numticks;
-        }
-        while(truck2.current_y != sugar_barn.current_y);
-        do{
-          truck2.draw(truck2.current_y, truck2.current_x+1, lasttick, numticks);
-          lasttick += numticks;
-        }
-        while(truck2.current_x != bakery.current_x-13);
+        truck2.move_to(bakery.current_y+8, bakery.current_x-25, false, lasttick, numticks);
+        truck2.move_to(truck2.current_y, bakery.current_x-13, false, lasttick, numticks);
       }
     }
     else if(truck2.current_x == bakery.current_x-13){
       truck1.draw(truck1.current_y, truck1.current_x, lasttick, numticks * 50);
       lasttick += numticks*50;
       if(from == "flour"){
-        do{
-          truck2.draw(truck2.current_y, truck2.current_x-1, lasttick, numticks);
-          lasttick += numticks;
-        }
-        while(truck2.current_x != bakery.current_x-17);
-        do{
-          truck2.draw(truck2.current_y+1, truck2.current_x, lasttick, numticks);
-          lasttick += numticks;
-        }
-        while(truck2.current_y != sugar_barn.current_y+4);
+        truck2.move_to(sugar_barn.current_y+4, bakery.current_x-25, false, lasttick, numticks);
       }
-      do{
-        truck2.draw(truck2.current_y, truck2.current_x-1, lasttick, numticks);
-        lasttick += numticks;
-      }
-      while(truck2.current_x != sugar_barn.current_x);
-
+      truck2.move_to(truck2.current_y, sugar_barn.current_x, false, lasttick, numticks);
     }
   }
 }
@@ -877,12 +761,21 @@ void child_a(DisplayObject &c, int num) {
 int main(int argc, char** argv)
 {	
   std::thread consts_t( [&]() { 
+    std::unique_lock(egg_barn.cpos);
     egg_barn.draw(30,30);
+    egg_barn.wait_cpos.notify_all();
+
+    std::unique_lock(sugar_barn.cpos);
     sugar_barn.draw(42,30);
+    sugar_barn.wait_cpos.notify_all();
+
     std::unique_lock(bakery.cpos);
     bakery.draw(30, 70);
     bakery.wait_cpos.notify_all();
+
+    std::unique_lock(cow.cpos);
     cow.draw(26, 63);
+    cow.wait_cpos.notify_all();
   });
   std::thread farmer_t(farmer_a);
   std::thread truck1_t(truck1_a);
