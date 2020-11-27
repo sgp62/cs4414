@@ -21,7 +21,7 @@ public:
 	void update_contents(const std::string&);
 	void draw(int, int, int lasttick = -1, int numticks = 1);
 	static void redisplay();
-	void move_to(int, int, bool, int, int);
+	void move_to(const int&, const int&, const bool&, int&, const int&);
 
 
 private:

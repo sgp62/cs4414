@@ -172,50 +172,49 @@ void DisplayObject::redisplay()
 
 }
 
-void DisplayObject::move_to(int dx, int dy, bool yfirst, int lt, int nt){
-  int lasttick = lt;
+void DisplayObject::move_to(const int &dy, const int &dx, const bool &yfirst, int &lt, const int &nt){
   if(yfirst){
     if(current_y > dy){
       do{
-        draw(current_y-1, current_x, lasttick, nt);
-        lasttick+= nt;
+        draw(current_y-1, current_x, lt, nt);
+        lt+= nt;
       }
       while(current_y > dy);
     }
     else if (current_y < dy) {
       do{
-        draw(current_y+1, current_x, lasttick, nt);
-        lasttick+= nt;
+        draw(current_y+1, current_x, lt, nt);
+        lt= nt;
       }
       while(current_y < dy);
     }
   }
   if(current_x > dx){
     do{
-      draw(current_y, current_x-1, lasttick, nt);
-      lasttick+= nt;
+      draw(current_y, current_x-1, lt, nt);
+      lt+= nt;
     }
     while(current_x > dx);
   }
   else if (current_x < dx) {
     do{
-      draw(current_y, current_x+1, lasttick, nt);
-      lasttick+= nt;
+      draw(current_y, current_x+1, lt, nt);
+      lt+= nt;
     }
     while(current_x < dx);
   }
   if(!yfirst){
     if(current_y > dy){
       do{
-        draw(current_y-1, current_x, lasttick, nt);
-        lasttick+= nt;
+        draw(current_y-1, current_x, lt, nt);
+        lt+= nt;
       }
       while(current_y > dy);
     }
     else if (current_y < dy) {
       do{
-        draw(current_y+1, current_x, lasttick, nt);
-        lasttick+= nt;
+        draw(current_y+1, current_x, lt, nt);
+        lt+= nt;
       }
       while(current_y < dy);
     }
