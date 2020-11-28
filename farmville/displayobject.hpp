@@ -9,11 +9,12 @@ public:
 	int  layer;
 	int  current_x;
 	int  current_y;
+	bool  writer;
+	int  readers;
+	int  writers_waiting;
 	std::string image;
 	std::shared_mutex cpos;
 	std::condition_variable_any wait_cpos;
-
-	void moveto(int, int);
 
 	DisplayObject(const std::string&, const int);
 	DisplayObject(const DisplayObject&);
@@ -22,6 +23,10 @@ public:
 	void draw(int, int, int lasttick = -1, int numticks = 1);
 	static void redisplay();
 	void move_to(int, int, bool, int&, int);
+	void startwrite();
+	void endwrite();
+	void startread();
+	void endread();
 
 
 private:

@@ -261,13 +261,14 @@ void egg_a() {
 
     int bx = bakery.current_x;
 
-    eggs1.move_to(eggs1.current_y, bx+4, false, lasttick, numticks);
+    eggs1.move_to(eggs1.current_y, bx+5, false, lasttick, numticks);
     eggs2.draw(34, 65, lasttick, 1);
     lasttick++;
     int temptick = lasttick;
-    std::thread t1( [&]{ eggs1.move_to(eggs1.current_y, bx+13, false, temptick, numticks); });
+    std::thread t1( [&]{ eggs1.move_to(eggs1.current_y, bx+14, false, temptick, numticks); });
     t1.detach();
-    eggs2.move_to(eggs2.current_y, bx+4, false, lasttick, numticks);
+    eggs2.move_to(eggs2.current_y, bx+5, false, lasttick, numticks);
+    
     eggs1.update_contents("");
     lasttick++;
 
@@ -275,12 +276,14 @@ void egg_a() {
     lasttick++;
 
     temptick = lasttick;
-    std::thread t2( [&]{ eggs2.move_to(eggs2.current_y, bx+13, false, temptick, numticks); });
+    std::thread t2( [&]{ eggs2.move_to(eggs2.current_y, bx+14, false, temptick, numticks); });
     t2.detach();
-    eggs3.move_to(eggs3.current_y, bx+4, false, lasttick, numticks);
+    eggs3.move_to(eggs3.current_y, bx+5, false, lasttick, numticks);
+    
     eggs2.update_contents("");
+
     lasttick++;
-    eggs3.move_to(eggs3.current_y, bx+13, false, lasttick, numticks);
+    eggs3.move_to(eggs3.current_y, bx+14, false, lasttick, numticks);
     eggs3.update_contents("");
     lasttick++;
 
@@ -306,13 +309,13 @@ void flour_a() {
     lasttick++;
 
 
-    flour1.move_to(flour1.current_y, bx+2, false, lasttick, numticks);
+    flour1.move_to(flour1.current_y, bx+3, false, lasttick, numticks);
     flour2.draw(38, 63, lasttick, 1);
     lasttick++;
     int temptick = lasttick;
-    std::thread t1( [&]{ flour1.move_to(flour1.current_y, bx+11, false, temptick, numticks); });
+    std::thread t1( [&]{ flour1.move_to(flour1.current_y, bx+12, false, temptick, numticks); });
     t1.detach();
-    flour2.move_to(flour2.current_y, bx+2, false, lasttick, numticks);
+    flour2.move_to(flour2.current_y, bx+3, false, lasttick, numticks);
     flour1.update_contents("");
     lasttick++;
 
@@ -320,12 +323,12 @@ void flour_a() {
     lasttick++;
 
     temptick = lasttick;
-    std::thread t2( [&]{ flour2.move_to(flour2.current_y, bx+11, false, temptick, numticks); });
+    std::thread t2( [&]{ flour2.move_to(flour2.current_y, bx+12, false, temptick, numticks); });
     t2.detach();
-    flour3.move_to(flour3.current_y, bx+2, false, lasttick, numticks);
+    flour3.move_to(flour3.current_y, bx+3, false, lasttick, numticks);
     flour2.update_contents("");
     lasttick++;
-    flour3.move_to(flour3.current_y, bx+11, false, lasttick, numticks);
+    flour3.move_to(flour3.current_y, bx+12, false, lasttick, numticks);
     flour3.update_contents("");
     lasttick++;
     
@@ -340,7 +343,6 @@ void sugar_a() {
     return bakery.current_x != 0;
   });
   int bx = bakery.current_x;
-
   while(true){
     //if(truck2.current_x == bakery.current_x-13 && truck2.current_y == bakery.current_y+16){
     sugar1.update_contents(sugar_str);
@@ -349,14 +351,13 @@ void sugar_a() {
     sugar1.draw(46, 63, lasttick, 1);
     lasttick++;
 
-
-    sugar1.move_to(sugar1.current_y, bx+2, false, lasttick, numticks);
+    sugar1.move_to(sugar1.current_y, bx+3, false, lasttick, numticks);
     sugar2.draw(46, 63, lasttick, 1);
     lasttick++;
     int temptick = lasttick;
-    std::thread t1( [&]{ sugar1.move_to(sugar1.current_y, bx+11, false, temptick, numticks); });
+    std::thread t1( [&]{ sugar1.move_to(sugar1.current_y, bx+12, false, temptick, numticks); });
     t1.detach();
-    sugar2.move_to(sugar2.current_y, bx+2, false, lasttick, numticks);
+    sugar2.move_to(sugar2.current_y, bx+3, false, lasttick, numticks);
     sugar1.update_contents("");
     lasttick++;
 
@@ -364,12 +365,12 @@ void sugar_a() {
     lasttick++;
 
     temptick = lasttick;
-    std::thread t2( [&]{ sugar2.move_to(sugar2.current_y, bx+11, false, temptick, numticks); });
+    std::thread t2( [&]{ sugar2.move_to(sugar2.current_y, bx+12, false, temptick, numticks); });
     t2.detach();
-    sugar3.move_to(sugar3.current_y, bx+2, false, lasttick, numticks);
+    sugar3.move_to(sugar3.current_y, bx+3, false, lasttick, numticks);
     sugar2.update_contents("");
     lasttick++;
-    sugar3.move_to(sugar3.current_y, bx+11, false, lasttick, numticks);
+    sugar3.move_to(sugar3.current_y, bx+12, false, lasttick, numticks);
     sugar3.update_contents("");
     lasttick++;
   }
@@ -383,8 +384,6 @@ void butter_a() {
     return bakery.current_x != 0;
   });
   int bx = bakery.current_x;
-
-
   while(true){
     //if(truck1.current_x == bakery.current_x-13 && truck1.current_y == bakery.current_y+8){
     butter1.update_contents(butter_str);
@@ -393,13 +392,13 @@ void butter_a() {
     butter1.draw(42, 62, lasttick, 1);
     lasttick++;
 
-    butter1.move_to(butter1.current_y, bx+1, false, lasttick, numticks);
+    butter1.move_to(butter1.current_y, bx+2, false, lasttick, numticks);
     butter2.draw(42, 62, lasttick, 1);
     lasttick++;
     int temptick = lasttick;
-    std::thread t1( [&]{ butter1.move_to(butter1.current_y, bx+10, false, temptick, numticks); });
+    std::thread t1( [&]{ butter1.move_to(butter1.current_y, bx+11, false, temptick, numticks); });
     t1.detach();
-    butter2.move_to(butter2.current_y, bx+1, false, lasttick, numticks);
+    butter2.move_to(butter2.current_y, bx+2, false, lasttick, numticks);
     butter1.update_contents("");
     lasttick++;
 
@@ -407,12 +406,12 @@ void butter_a() {
     lasttick++;
 
     temptick = lasttick;
-    std::thread t2( [&]{ butter2.move_to(butter2.current_y, bx+10, false, temptick, numticks); });
+    std::thread t2( [&]{ butter2.move_to(butter2.current_y, bx+11, false, temptick, numticks); });
     t2.detach();
-    butter3.move_to(butter3.current_y, bx+1, false, lasttick, numticks);
+    butter3.move_to(butter3.current_y, bx+2, false, lasttick, numticks);
     butter2.update_contents("");
     lasttick++;
-    butter3.move_to(butter3.current_y, bx+10, false, lasttick, numticks);
+    butter3.move_to(butter3.current_y, bx+11, false, lasttick, numticks);
     butter3.update_contents("");
     lasttick++;
   }
@@ -461,8 +460,6 @@ void truck1_a() {
   egg_barn.wait_cpos.wait(readpos_lock, [&](){
     return egg_barn.current_x != 0;
   });
-
-
   while(true){
     if(truck1.current_x == egg_barn.current_x){
       truck1.draw(truck1.current_y, truck1.current_x, lasttick, numticks * 15);
@@ -586,68 +583,73 @@ void nest_3a() {
   }
 }
 
-void chicken_a(DisplayObject &c, int num) {
+void chicken_1a() {
   int lasttick = 0, numticks = 4, extraticks = 30;
-  if (num == 1) c.draw(19, 15, lasttick, 1);
-  if (num == 2) c.draw(19, 35, lasttick, 1);
+  chicken1.draw(19, 15, lasttick, 1);
   lasttick+=1;
-  int y1 = nest1[0].current_y, x1 = nest1[0].current_x;
-  int x2 = nest2[0].current_x; //y2 = nest2[0].current_y
-  int y3 = nest3[0].current_y, x3 = nest3[0].current_x; 
+  std::shared_lock readpos_lock(nest1[0].cpos);
+  nest1[0].wait_cpos.wait(readpos_lock, [&](){
+    return nest1[0].current_x != 0;
+  });
+  int x1 = nest1[0].current_x;
+  int x2 = nest2[0].current_x;
   while(true){
-    if(c.current_x == x1){
-      c.draw(c.current_y, c.current_x, lasttick, extraticks);
+    if(chicken1.current_x == x1){
+      chicken1.draw(chicken1.current_y, chicken1.current_x, lasttick, extraticks);
       lasttick += extraticks;
-      do{
-        c.draw(c.current_y, c.current_x+1, lasttick, numticks);
-        lasttick += numticks;
-      }
-      while(c.current_x != x2);
+      chicken1.move_to(chicken1.current_y, x2, false, lasttick, numticks);
     }
-    else if(c.current_x == x2){
-      c.draw(c.current_y, c.current_x, lasttick, extraticks);
+    else if(chicken1.current_x == x2){
+      chicken1.draw(chicken1.current_y, chicken1.current_x, lasttick, extraticks);
       lasttick += extraticks;
-      do{
-        c.draw(c.current_y, c.current_x+1, lasttick, numticks);
-        lasttick += numticks;
-      }
-      while(c.current_x != x3);
-      c.draw(c.current_y, c.current_x, lasttick, extraticks);
+      chicken1.move_to(chicken1.current_y, x1, false, lasttick, numticks);
+      chicken1.draw(chicken1.current_y, chicken1.current_x, lasttick, extraticks);
       lasttick += extraticks;
-      do{
-        c.draw(c.current_y-1, c.current_x, lasttick, numticks);
-        lasttick += numticks;
-      }
-      while(c.current_y != y3-6);
-      do{
-        c.draw(c.current_y, c.current_x-1, lasttick, numticks);
-        lasttick += numticks;
-      }
-      while(c.current_x != x1);
-      do{
-        c.draw(c.current_y+1, c.current_x, lasttick, numticks);
-        lasttick += numticks;
-      }
-      while(c.current_y != y1-3);
     }
   }
 }
 
-//batter1.draw(39, 94);
+void chicken_2a() {
+  int lasttick = 0, numticks = 4, extraticks = 30;
+  chicken2.draw(19, 55, lasttick, 1);
+  lasttick+=1;
+  std::shared_lock readpos_lock(nest3[0].cpos);
+  nest3[0].wait_cpos.wait(readpos_lock, [&](){
+    return nest3[0].current_x != 0;
+  });
+  int x2 = nest2[0].current_x;
+  int x3 = nest3[0].current_x; 
+  while(true){
+    if(chicken2.current_x == x3){
+      chicken2.draw(chicken2.current_y, chicken2.current_x, lasttick, extraticks);
+      lasttick += extraticks;
+      chicken2.move_to(chicken2.current_y, x2, false, lasttick, numticks);
+    }
+    else if(chicken2.current_x == x2){
+      chicken2.draw(chicken2.current_y, chicken2.current_x, lasttick, extraticks);
+      lasttick += extraticks;
+      chicken2.move_to(chicken2.current_y, x3, false, lasttick, numticks);
+    }
+  }
+}
 
 void mixer_a() {
-  int lasttick = 0, numticks = 10;
+  int lasttick = 0, numticks = 4;
 	std::string mixer_string;
 	DisplayObject mixer_contents(mixer_string, 3);
   int mc = 0;
-	for(int n = 0; n < 10000; n++)
+	while(true)
 	{
 		if(mc == 0xFF)
 		{	
 			mc = 0;
       mixer_string = "";
 			mixer_contents.update_contents(mixer_string);
+      lasttick++;
 			mixer_contents.draw(47, 92, lasttick, 1);
+      lasttick++;
+      batter1.update_contents("[ccc]");
+      batter2.update_contents("[ccc]");
       lasttick++;
       batter1.draw(47, 92, lasttick, numticks);
       batter2.draw(46, 92, lasttick, numticks);
@@ -661,22 +663,34 @@ void mixer_a() {
 		}
 		else
 		{
-      batter1.update_contents("[ccc]");
-      batter2.update_contents("[ccc]");
       mixer_string = "";
-      //set the elements SYNCHRONIZATION HERE
-      /*
-      if(eggs1.current_x == bakery.current_x+13) mc = mc | 0x1;
-      if(eggs2.current_x == bakery.current_x+13) mc = mc | 0x2;
-      if(butter1.current_x == bakery.current_x+10) mc = mc | 0x4;
-      if(butter2.current_x == bakery.current_x+10) mc = mc | 0x8;
-      if(flour1.current_x == bakery.current_x+11) mc = mc | 0x10;
-      if(flour2.current_x == bakery.current_x+11) mc = mc | 0x20;
-      if(sugar1.current_x == bakery.current_x+11) mc = mc | 0x40;
-      if(sugar2.current_x == bakery.current_x+11) mc = mc | 0x80;
-      */
-      //make the string
-      mc |= std::rand()&0xFF;
+      //set the elements
+      eggs1.startread();
+      eggs2.startread();
+      eggs3.startread();
+      butter1.startread();
+      butter2.startread();
+      butter3.startread();
+      flour1.startread();
+      flour2.startread();
+      flour3.startread();
+      sugar1.startread();
+      sugar2.startread();
+      sugar3.startread();
+      //std::cout << (eggs1.current_x == bakery.current_x+13) << std::endl;
+      //std::cout << bakery.current_x+13 << std::endl;
+      //std::cout << eggs1.current_x << std::endl;
+      if(!(mc & 0x1) && (eggs1.current_x == bakery.current_x+13 || eggs2.current_x == bakery.current_x+13 || eggs3.current_x == bakery.current_x+13)) mc = mc | 0x1;
+      else if(eggs1.current_x == bakery.current_x+13 || eggs2.current_x == bakery.current_x+13 || eggs3.current_x == bakery.current_x+13) mc = mc | 0x2;
+
+      if(!(mc & 0x4) && (butter1.current_x == bakery.current_x+10 || butter2.current_x == bakery.current_x+10 || butter3.current_x == bakery.current_x+10)) mc = mc | 0x4;
+      else if(butter1.current_x == bakery.current_x+10 || butter2.current_x == bakery.current_x+10 || butter3.current_x == bakery.current_x+10) mc = mc | 0x8;
+
+      if(!(mc & 0x10) && (flour1.current_x == bakery.current_x+11 || flour2.current_x == bakery.current_x+11 || flour3.current_x == bakery.current_x+11)) mc = mc | 0x10;
+      else if(flour1.current_x == bakery.current_x+11 || flour2.current_x == bakery.current_x+11 || flour3.current_x == bakery.current_x+11) mc = mc | 0x20;
+
+      if(!(mc & 0x40) && (sugar1.current_x == bakery.current_x+11 || sugar2.current_x == bakery.current_x+11 || sugar3.current_x == bakery.current_x+11)) mc = mc | 0x40;
+      else if(sugar1.current_x == bakery.current_x+11 || sugar2.current_x == bakery.current_x+11 || sugar3.current_x == bakery.current_x+11) mc = mc | 0x80;
       mixer_string = (mc & 0x01)? "E": " ";
 			mixer_string +=(mc & 0x02)? "E": " ";
 			mixer_string += (mc & 0x04)? "B": " ";
@@ -686,8 +700,23 @@ void mixer_a() {
 			mixer_string += (mc & 0x20)? "F": " ";
 			mixer_string += (mc & 0x40)? "S": " ";
 			mixer_string += (mc & 0x80)? "S": " ";
+      eggs1.endread();
+      eggs2.endread();
+      eggs3.endread();
+      butter1.endread();
+      butter2.endread();
+      butter3.endread();
+      flour1.endread();
+      flour2.endread();
+      flour3.endread();
+      sugar1.endread();
+      sugar2.endread();
+      sugar3.endread();
+
+
       
       mixer_contents.update_contents(mixer_string);
+      lasttick++;
       mixer_contents.draw(47, 92, lasttick, 1);
       lasttick+= 1;
     }
@@ -788,8 +817,8 @@ int main(int argc, char** argv)
   std::thread sugar_t(sugar_a);
   std::thread butter_t(butter_a);
   std::thread cupcakes_t(cupcakes_a);
-  std::thread chicken1_t(chicken_a, std::ref(chicken1), 1);
-  std::thread chicken2_t(chicken_a, std::ref(chicken2), 2);
+  std::thread chicken1_t(chicken_1a);
+  std::thread chicken2_t(chicken_2a);
   std::thread child1_t(child_a, std::ref(child1), 1);
   std::thread child2_t(child_a, std::ref(child2), 2);
   std::thread child3_t(child_a, std::ref(child3), 3);

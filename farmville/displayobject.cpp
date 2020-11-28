@@ -172,66 +172,107 @@ void DisplayObject::redisplay()
 
 }
 
+void DisplayObject::startwrite(){
+	std::unique_lock writelock(cpos);
+	++writers_waiting;
+	wait_cpos.wait(writelock, [&]() { return readers == 0; });
+	--writers_waiting;
+	writer = true;
+}
+
+void DisplayObject::endwrite(){
+	std::unique_lock writelock(cpos);
+	writer = false;
+	wait_cpos.notify_all();
+}
+
+void DisplayObject::startread(){
+	std::shared_lock readlock(cpos);
+	wait_cpos.wait(readlock, [&](){ return !active_writer && writers_waiting == 0; });
+	++readers;
+}
+
+void DisplayObject::endread(){
+	std::shared_lock readlock(cpos);
+	if(--readers == 0) wait_cpos.notify_all();
+}
+
 void DisplayObject::move_to(int dy, int dx, bool yfirst, int &lt, int nt){
-  	if(yfirst){
-    	if(current_y > dy){
-      		do{
-    			draw(current_y-1, current_x, lt, nt);
-        		lt+= nt;
-      		}
-      		while(current_y > dy);
-    	}
-    	else if (current_y < dy) {
-      		do{
-        		draw(current_y+1, current_x, lt, nt);
-        		lt+= nt;
-      		}
-      		while(current_y < dy);
-    	}
+  if(yfirst) {
+		if(current_y > dy){
+			do{
+				startwrite();
+				draw(current_y-1, current_x, lt, nt);
+				lt+= nt;
+				endwrite();
+			}
+			while(current_y > dy);
+		}
+		else if (current_y < dy) {
+			do{
+				startwrite();
+				draw(current_y+1, current_x, lt, nt);
+				lt+= nt;
+				endwrite();
+			}
+			while(current_y < dy);
+		}
 		if(current_x > dx){
 			do{
+				startwrite();
 				draw(current_y, current_x-1, lt, nt);
 				lt+= nt;
+				endwrite();
 			}
 			while(current_x > dx);
 		}
 		else if (current_x < dx) {
 			do{
+				startwrite();
 				draw(current_y, current_x+1, lt, nt);
 				lt+= nt;
+				endwrite();
 			}
 			while(current_x < dx);
 		}
-  	}
-  	else{
+	}
+  else{
 		if(current_x > dx){
-	  		do{
-	  			draw(current_y, current_x-1, lt, nt);
+	  	do{
+				startwrite();
+	  		draw(current_y, current_x-1, lt, nt);
 				lt+= nt;
+				endwrite();
 			}
 			while(current_x > dx);
 		}
 		else if (current_x < dx) {
 			do{
+				startwrite();
 				draw(current_y, current_x+1, lt, nt);
 				lt+= nt;
+				endwrite();
 			}
 			while(current_x < dx);
 		}
-    	if(current_y > dy){
-      		do{
-        		draw(current_y-1, current_x, lt, nt);
-        		lt+= nt;
-      		}
-      		while(current_y > dy);
+    if(current_y > dy){
+    	do{
+				startwrite();
+      	draw(current_y-1, current_x, lt, nt);
+      	lt+= nt;
+				endwrite();
+      }
+      while(current_y > dy);
+    }
+    else if (current_y < dy) {
+    	do{
+				startwrite();
+      	draw(current_y+1, current_x, lt, nt);
+      	lt+= nt;
+				endwrite();
     	}
-    	else if (current_y < dy) {
-      		do{
-        		draw(current_y+1, current_x, lt, nt);
-        		lt+= nt;
-      		}
-      		while(current_y < dy);
-    	}
+     	while(current_y < dy);
+   	}
 
 	}
 }
