@@ -584,6 +584,7 @@ void nest_3a() {
 }
 
 void chicken_1a() {
+  chicken1.myturn = true;
   int lasttick = 0, numticks = 4, extraticks = 30;
   chicken1.draw(19, 15, lasttick, 1);
   lasttick+=1;
@@ -597,7 +598,7 @@ void chicken_1a() {
     if(chicken1.current_x == x1){
       chicken1.draw(chicken1.current_y, chicken1.current_x, lasttick, extraticks);
       lasttick += extraticks;
-      chicken1.move_to(chicken1.current_y, x2, false, lasttick, numticks);
+      chicken1.move_to(chicken1.current_y, x2, false, lasttick, numticks, chicken2);
     }
     else if(chicken1.current_x == x2){
       chicken1.draw(chicken1.current_y, chicken1.current_x, lasttick, extraticks);
@@ -610,6 +611,7 @@ void chicken_1a() {
 }
 
 void chicken_2a() {
+  chicken2.myturn = false;
   int lasttick = 0, numticks = 4, extraticks = 30;
   chicken2.draw(19, 55, lasttick, 1);
   lasttick+=1;
@@ -623,7 +625,7 @@ void chicken_2a() {
     if(chicken2.current_x == x3){
       chicken2.draw(chicken2.current_y, chicken2.current_x, lasttick, extraticks);
       lasttick += extraticks;
-      chicken2.move_to(chicken2.current_y, x2, false, lasttick, numticks);
+      chicken2.move_to(chicken2.current_y, x2, false, lasttick, numticks, chicken1);
     }
     else if(chicken2.current_x == x2){
       chicken2.draw(chicken2.current_y, chicken2.current_x, lasttick, extraticks);

@@ -12,6 +12,7 @@ public:
 	bool  writer;
 	int  readers;
 	int  writers_waiting;
+	bool myturn;
 	std::string image;
 	std::shared_mutex cpos;
 	std::condition_variable_any wait_cpos;
@@ -22,15 +23,17 @@ public:
 	void update_contents(const std::string&);
 	void draw(int, int, int lasttick = -1, int numticks = 1);
 	static void redisplay();
-	void move_to(int, int, bool, int&, int);
+	void move_to(int, int, bool, int&, int, DisplayObject& = def);
 	void startwrite();
 	void endwrite();
 	void startread();
 	void endread();
+	void checkcollision(DisplayObject&);
 
 
 private:
 	static int tick;
+	static DisplayObject def;
 	static std::condition_variable_any want_rw;
 	static std::shared_mutex mtx;
 	static const int LINELEN = 140;
