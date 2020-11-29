@@ -28,7 +28,7 @@ public:
 	void endwrite();
 	void startread();
 	void endread();
-	void checkcollision(DisplayObject&);
+	void checkcollision(DisplayObject&, int&, int);
 
 
 private:
