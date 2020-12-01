@@ -526,17 +526,22 @@ void nest_1a() {
   lasttick++;
   int count = 0;
   while(true){
-    if(count == 3 && farmer.current_x == nest1[0].current_x && farmer.current_y == nest1[0].current_y+2){
-      nest1[0].draw(22, 15, lasttick, numticks);
-      count = 0;
-      lasttick += numticks;
-    }
     if((chicken1.current_x == nest1[0].current_x && chicken1.current_y == nest1[0].current_y-3) 
     || (chicken2.current_x == nest1[0].current_x && chicken2.current_y == nest1[0].current_y-3)){
       if(count < 3){
         nest1[++count].draw(22, 15, lasttick, numticks);
         lasttick += numticks;
       }
+      if(count >= 3) count = 3;
+    }
+    else if(count == 3 && farmer.current_x == nest1[0].current_x && farmer.current_y == nest1[0].current_y+2){
+      nest1[0].draw(22, 15, lasttick, numticks);
+      lasttick += numticks;
+      count = 0;
+    }
+    else{
+      nest1[count].draw(22, 15, lasttick, numticks);
+      lasttick++;
     }
   }
 }
@@ -547,18 +552,31 @@ void nest_2a() {
   lasttick++;
   int count = 0;
   while(true){
-    if(count == 3 && farmer.current_x == nest2[0].current_x && farmer.current_y == nest2[0].current_y+2){
-      nest2[0].draw(22, 35, lasttick, numticks);
-      count = 0;
-      lasttick += numticks;
-    }
-    if((chicken1.current_x == nest2[0].current_x && chicken1.current_y == nest2[0].current_y-3) 
-    || (chicken2.current_x == nest2[0].current_x && chicken2.current_y == nest2[0].current_y-3)){
+    chicken1.startread();
+    chicken2.startread();
+    farmer.startread();
+    int c1x = chicken1.current_x, c1y = chicken1.current_y, c2x = chicken2.current_x, c2y = chicken2.current_y, fx = farmer.current_x, fy = farmer.current_y;
+    chicken1.endread();
+    chicken2.endread();
+    farmer.endread();
+    if((c1x == nest2[0].current_x && c1y == nest2[0].current_y-3) 
+    || (c2x == nest2[0].current_x && c2y == nest2[0].current_y-3)){
       if(count < 3){
         nest2[++count].draw(22, 35, lasttick, numticks);
         lasttick += numticks;
       }
+      if(count >= 3) count = 3;
     }
+    else if(count == 3 && fx == nest2[0].current_x && fy == nest2[0].current_y+2){
+      nest2[0].draw(22, 35, lasttick, numticks);
+      count = 0;
+      lasttick += numticks;
+    }
+    else{
+      nest2[count].draw(22, 35, lasttick, numticks);
+      lasttick++;
+    }
+
   }
 }
 
@@ -568,17 +586,22 @@ void nest_3a() {
   lasttick++;
   int count = 0;
   while(true){
-    if(count == 3 && farmer.current_x == nest3[0].current_x+3 && farmer.current_y == nest3[0].current_y+2){
-      nest3[0].draw(22, 55, lasttick, numticks);
-      count = 0;
-      lasttick += numticks;
-    }
     if((chicken1.current_x == nest3[0].current_x && chicken1.current_y == nest3[0].current_y-3) 
     || (chicken2.current_x == nest3[0].current_x && chicken2.current_y == nest3[0].current_y-3)){
       if(count < 3){
         nest3[++count].draw(22, 55, lasttick, numticks);
         lasttick += numticks;
       }
+      if(count >= 3) count = 3;
+    }
+    else if(count == 3 && farmer.current_x == nest3[0].current_x+3 && farmer.current_y == nest3[0].current_y+2){
+      nest3[0].draw(22, 55, lasttick, numticks);
+      count = 0;
+      lasttick += numticks;
+    }
+    else{
+      nest3[count].draw(22, 55, lasttick, numticks);
+      lasttick++;
     }
   }
 }
@@ -590,9 +613,11 @@ void chicken_1a() {
   lasttick+=1;
   std::shared_lock readpos_lock(nest1[0].cpos);
   nest1[0].wait_cpos.wait(readpos_lock, [&](){
-    return nest1[0].current_x != 0;
+    return nest2[0].current_x != 0;
   });
+  //nest1[0].startread();
   int x1 = nest1[0].current_x;
+  //nest1[0].endread();
   int x2 = nest2[0].current_x;
   while(true){
     if(chicken1.current_x == x1){
@@ -601,11 +626,11 @@ void chicken_1a() {
       chicken1.move_to(chicken1.current_y, x2, false, lasttick, numticks, chicken2);
     }
     else if(chicken1.current_x == x2){
-      chicken1.draw(chicken1.current_y, chicken1.current_x, lasttick, extraticks);
-      lasttick += extraticks;
+      chicken1.draw(chicken1.current_y, chicken1.current_x, lasttick, numticks);
+      lasttick += numticks;
       chicken1.move_to(chicken1.current_y, x1, false, lasttick, numticks);
-      chicken1.draw(chicken1.current_y, chicken1.current_x, lasttick, extraticks);
-      lasttick += extraticks;
+      //chicken1.draw(chicken1.current_y, chicken1.current_x, lasttick, extraticks);
+      //lasttick += extraticks;
     }
   }
 }
@@ -617,19 +642,21 @@ void chicken_2a() {
   lasttick+=1;
   std::shared_lock readpos_lock(nest3[0].cpos);
   nest3[0].wait_cpos.wait(readpos_lock, [&](){
-    return nest3[0].current_x != 0;
+    return nest2[0].current_x != 0;
   });
+  //nest2[0].startread();
   int x2 = nest2[0].current_x;
+  //nest2[0].endread();
   int x3 = nest3[0].current_x; 
   while(true){
     if(chicken2.current_x == x3){
       chicken2.draw(chicken2.current_y, chicken2.current_x, lasttick, extraticks);
-      lasttick += extraticks;
+      lasttick += extraticks ;
       chicken2.move_to(chicken2.current_y, x2, false, lasttick, numticks, chicken1);
     }
     else if(chicken2.current_x == x2){
-      chicken2.draw(chicken2.current_y, chicken2.current_x, lasttick, extraticks);
-      lasttick += extraticks;
+      chicken2.draw(chicken2.current_y, chicken2.current_x, lasttick, numticks);
+      lasttick += numticks;
       chicken2.move_to(chicken2.current_y, x3, false, lasttick, numticks);
     }
   }
@@ -656,6 +683,9 @@ void mixer_a() {
       batter1.draw(47, 92, lasttick, numticks);
       batter2.draw(46, 92, lasttick, numticks);
       lasttick += numticks;
+      std::unique_lock guard(DisplayObject::cake_mtx);
+      DisplayObject::not_full.wait(guard, [&]() { return DisplayObject::nfree != 0;});
+      
       batter1.draw(39, 94, lasttick, numticks);
       lasttick += numticks;
       //batter1.update_contents("");
@@ -715,8 +745,6 @@ void mixer_a() {
       sugar2.endread();
       sugar3.endread();
 
-
-      
       mixer_contents.update_contents(mixer_string);
       lasttick++;
       mixer_contents.draw(47, 92, lasttick, 1);
@@ -729,37 +757,11 @@ void mixer_a() {
 
 
 void cupcakes_a() {
-  int lasttick = 0, numticks = 10;
-  //bool baked1 = false;
-  //bool baked2 = false;
-  cupcakes[0].draw(35, 100, lasttick, 1);
-  lasttick++;
+  int lasttick = 0;//, numticks = 10;
+  DisplayObject::nfull = 5;
   while(true){
-    //SYNCHRONIZATION: cupcakes populate as batter is added
-    //if(batter1.current_y == 39 && !baked1){
-    cupcakes[1].draw(35, 100, lasttick, numticks);
-    lasttick += numticks;
-    cupcakes[2].draw(35, 100, lasttick, numticks);
-    lasttick += numticks;
-    cupcakes[3].draw(35, 100, lasttick, numticks);
-    lasttick += numticks;
-    //baked1 = true;
-
-    //if(batter2.current_y == 39 && !baked2){
-    cupcakes[4].draw(35, 100, lasttick, numticks);
-    lasttick += numticks;
-    cupcakes[5].draw(35, 100, lasttick, numticks);
-    lasttick += numticks;
-    cupcakes[6].draw(35, 100, lasttick, numticks);
-    lasttick += numticks;
-    //baked2 = true;
-
-    lasttick += numticks;
-    cupcakes[0].draw(35, 100, lasttick, 1);
-    lasttick++;
-   //baked1 = false;
-    //baked2 = false;
-
+    cupcakes[DisplayObject::nfull].draw(35, 100, lasttick);
+    lasttick ++;
   }
 }
 
@@ -773,24 +775,31 @@ void child_a(DisplayObject &c, int num) {
   if(num == 4) c.draw(40, 125);
   if(num == 5) c.draw(44, 120);
   int xo = c.current_x, yo = c.current_y;
-  int who = 0; //this will need to be synchronized so only one
+  int cakes = 1;
   while(true){
-    who |= std::rand()&0x5;
-    if(who == num){
+    if(DisplayObject::who == num){
+      std::unique_lock guard(DisplayObject::child_mtx);
       c.move_to(35, 110, true, lasttick, 1);
-      c.draw(c.current_y, c.current_x, lasttick, 2*numticks);
-      lasttick+= 2*numticks;
+      std::unique_lock cake_guard(DisplayObject::cake_mtx);
+      cakes = std::rand() % 5 + 1;
+      DisplayObject::not_enough.wait(cake_guard, [&](){ return DisplayObject::nfull >= cakes; });
+      DisplayObject::nfree += DisplayObject::nfull;
+      DisplayObject::nfull -= cakes;
+      DisplayObject::not_full.notify_one();
+      c.draw(c.current_y, c.current_x, lasttick, numticks);
+      lasttick+= numticks;
       c.move_to(yo, xo, false, lasttick, 1);
+      DisplayObject::who = std::rand() % 5 + 1;
     }
-    c.draw(c.current_y, c.current_x, lasttick, 3*numticks);
-    lasttick+= 3*numticks;
-    who = 0;
+    c.draw(c.current_y, c.current_x, lasttick, numticks);
+    lasttick += numticks;
   }
-  
 }
 
 int main(int argc, char** argv)
 {	
+  srand(std::time(0));
+  DisplayObject::who = std::rand() % 5 + 1;
   std::thread consts_t( [&]() { 
     std::unique_lock(egg_barn.cpos);
     egg_barn.draw(30,30);

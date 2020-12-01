@@ -3,9 +3,21 @@
 #include <mutex>
 #include "displayobject.hpp"
 #include <condition_variable>
+#include <atomic>
+
 
 char DisplayObject::theFarm[NLINES][LINELEN][NLAYERS];
 std::shared_mutex DisplayObject::mtx;
+
+
+std::mutex DisplayObject::child_mtx;
+std::condition_variable DisplayObject::child_wait;
+std::atomic_int DisplayObject::who;
+std::mutex DisplayObject::cake_mtx;
+std::condition_variable_any DisplayObject::not_enough;
+std::condition_variable_any DisplayObject::not_full;
+std::atomic_int DisplayObject::nfree = 6;
+std::atomic_int DisplayObject::nfull = 0;
 
 std::condition_variable_any DisplayObject::want_rw;
 int active_readers, writers_waiting;

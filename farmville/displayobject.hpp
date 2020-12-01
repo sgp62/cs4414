@@ -1,6 +1,7 @@
 #include <iostream>
 #include <shared_mutex>
 #include <mutex>
+#include <atomic>
 
 class DisplayObject {
 public:
@@ -29,6 +30,14 @@ public:
 	void startread();
 	void endread();
 	void checkcollision(DisplayObject&, int&, int);
+	static std::mutex child_mtx;
+	static std::condition_variable child_wait;
+	static std::mutex cake_mtx;
+	static std::condition_variable_any not_full;
+	static std::condition_variable_any not_enough;
+	static std::atomic_int nfree;
+	static std::atomic_int nfull;
+	static std::atomic_int who;
 
 
 private:
@@ -36,6 +45,7 @@ private:
 	static DisplayObject def;
 	static std::condition_variable_any want_rw;
 	static std::shared_mutex mtx;
+
 	static const int LINELEN = 140;
 	static const int NLINES = 60;
 	static const int NLAYERS = 4;
