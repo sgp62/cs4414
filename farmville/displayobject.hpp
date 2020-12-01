@@ -8,8 +8,8 @@ public:
 	int  width;
 	int  height;
 	int  layer;
-	int  current_x;
-	int  current_y;
+	volatile int  current_x;
+	volatile int  current_y;
 	bool  writer;
 	int  readers;
 	int  writers_waiting;

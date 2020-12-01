@@ -662,6 +662,33 @@ void chicken_2a() {
   }
 }
 
+void oven_a(int lasttick){
+  int numticks = 4;
+  for(int i = 0; i < 2; i++){
+  std::unique_lock guard(DisplayObject::cake_mtx);
+  DisplayObject::not_full.wait(guard, [&]() { return DisplayObject::nfree != 0;});
+  if(i == 0){
+    batter1.draw(39, 94, lasttick, numticks);
+    lasttick+=numticks;
+    batter1.draw(batter1.current_y, batter1.current_x, lasttick, numticks * 5);
+    lasttick+=numticks*5;
+    batter1.update_contents("");
+  }
+  if(i == 1){
+    batter2.draw(39, 94, lasttick, numticks);
+    lasttick+=numticks;
+    batter2.draw(batter1.current_y, batter1.current_x, lasttick, numticks * 5);
+    lasttick+=numticks*5;
+    batter2.update_contents("");
+  }
+  DisplayObject::nfree-=3;
+  if(DisplayObject::nfree < 0) DisplayObject::nfree = 0;
+  DisplayObject::nfull += 3;
+  if(DisplayObject::nfull > 6) DisplayObject::nfull = 6;
+  DisplayObject::not_enough.notify_one();
+  }
+}
+
 void mixer_a() {
   int lasttick = 0, numticks = 4;
 	std::string mixer_string;
@@ -683,15 +710,8 @@ void mixer_a() {
       batter1.draw(47, 92, lasttick, numticks);
       batter2.draw(46, 92, lasttick, numticks);
       lasttick += numticks;
-      std::unique_lock guard(DisplayObject::cake_mtx);
-      DisplayObject::not_full.wait(guard, [&]() { return DisplayObject::nfree != 0;});
-      
-      batter1.draw(39, 94, lasttick, numticks);
-      lasttick += numticks;
-      //batter1.update_contents("");
-      batter2.draw(39, 94, lasttick, numticks);
-      lasttick += numticks;
-      //batter2.update_contents("");
+      std::thread oven_t([&]{ oven_a(lasttick); });
+      oven_t.detach();
 		}
 		else
 		{
@@ -709,9 +729,6 @@ void mixer_a() {
       sugar1.startread();
       sugar2.startread();
       sugar3.startread();
-      //std::cout << (eggs1.current_x == bakery.current_x+13) << std::endl;
-      //std::cout << bakery.current_x+13 << std::endl;
-      //std::cout << eggs1.current_x << std::endl;
       if(!(mc & 0x1) && (eggs1.current_x == bakery.current_x+13 || eggs2.current_x == bakery.current_x+13 || eggs3.current_x == bakery.current_x+13)) mc = mc | 0x1;
       else if(eggs1.current_x == bakery.current_x+13 || eggs2.current_x == bakery.current_x+13 || eggs3.current_x == bakery.current_x+13) mc = mc | 0x2;
 
@@ -758,14 +775,12 @@ void mixer_a() {
 
 void cupcakes_a() {
   int lasttick = 0;//, numticks = 10;
-  DisplayObject::nfull = 5;
+  DisplayObject::nfull = 0;
   while(true){
     cupcakes[DisplayObject::nfull].draw(35, 100, lasttick);
     lasttick ++;
   }
 }
-
-
 
 void child_a(DisplayObject &c, int num) {
   int lasttick = 0, numticks = 10;
@@ -783,9 +798,11 @@ void child_a(DisplayObject &c, int num) {
       std::unique_lock cake_guard(DisplayObject::cake_mtx);
       cakes = std::rand() % 5 + 1;
       DisplayObject::not_enough.wait(cake_guard, [&](){ return DisplayObject::nfull >= cakes; });
+      c.draw(c.current_y, c.current_x, lasttick, numticks);
+      lasttick+= numticks;
       DisplayObject::nfree += DisplayObject::nfull;
       DisplayObject::nfull -= cakes;
-      DisplayObject::not_full.notify_one();
+      DisplayObject::not_full.notify_all();
       c.draw(c.current_y, c.current_x, lasttick, numticks);
       lasttick+= numticks;
       c.move_to(yo, xo, false, lasttick, 1);
@@ -830,12 +847,13 @@ int main(int argc, char** argv)
   std::thread cupcakes_t(cupcakes_a);
   std::thread chicken1_t(chicken_1a);
   std::thread chicken2_t(chicken_2a);
+  std::thread mixer_t(mixer_a);
+  //std::thread oven_t(oven_a);
   std::thread child1_t(child_a, std::ref(child1), 1);
   std::thread child2_t(child_a, std::ref(child2), 2);
   std::thread child3_t(child_a, std::ref(child3), 3);
   std::thread child4_t(child_a, std::ref(child4), 4);
   std::thread child5_t(child_a, std::ref(child5), 5);
-  std::thread mixer_t(mixer_a);
   
 	while(true){
     redisplay();
