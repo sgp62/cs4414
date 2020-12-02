@@ -18,6 +18,7 @@ std::condition_variable_any DisplayObject::not_enough;
 std::condition_variable_any DisplayObject::not_full;
 std::atomic_int DisplayObject::nfree = 6;
 std::atomic_int DisplayObject::nfull = 0;
+std::atomic_int DisplayObject::mc = 0;
 
 std::condition_variable_any DisplayObject::want_rw;
 int active_readers, writers_waiting;
@@ -34,6 +35,7 @@ DisplayObject::DisplayObject(const std::string& str, const int n)
 	layer = n;
 	width = 0;
 	height = 1;
+	flag = false;
 	int i = 0, x = 0;
 	while(char c = image[i++])
 	{
@@ -72,7 +74,7 @@ DisplayObject::~DisplayObject()
 	}
 }
 
-void DisplayObject::update_contents(const std::string& str)
+void DisplayObject::update_contents(const std::string& str, int& lasttick)
 {
 	int x = current_x;
 	int y = current_y;
@@ -85,7 +87,8 @@ void DisplayObject::update_contents(const std::string& str)
 	image = str;
 	if(current_x > 0 && current_y > 0)
 	{
-		draw(x, y);
+		std::cout << "Actually in the draw section" << std::endl;
+		draw(x, y, lasttick);
 	}
 }
 
@@ -204,6 +207,10 @@ void DisplayObject::startread(){
 	std::shared_lock readlock(cpos);
 	wait_cpos.wait(readlock, [&](){ return !active_writer && writers_waiting == 0; });
 	++readers;
+}
+
+int DisplayObject::gettick(){
+	return tick;
 }
 
 

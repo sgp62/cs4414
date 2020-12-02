@@ -251,42 +251,62 @@ void egg_a() {
   });
 
   while(true){
-    //if(truck1.current_x == bakery.current_x-13 && truck1.current_y == bakery.current_y+4){
-    eggs1.update_contents(egg_str);
-    eggs2.update_contents(egg_str);
-    eggs3.update_contents(egg_str);
-    eggs1.draw(34, 65, lasttick, 1);
-    lasttick++;
+    if(truck1.current_x == bakery.current_x-13 && truck1.current_y == bakery.current_y+4){
+      eggs1.update_contents(egg_str, lasttick);
+      eggs2.update_contents(egg_str, lasttick);
+      eggs3.update_contents(egg_str, lasttick);
+      eggs1.draw(34, 65, lasttick, 1);
+      lasttick++;
 
 
-    int bx = bakery.current_x;
+      int bx = bakery.current_x;
 
-    eggs1.move_to(eggs1.current_y, bx+5, false, lasttick, numticks);
-    eggs2.draw(34, 65, lasttick, 1);
-    lasttick++;
-    int temptick = lasttick;
-    std::thread t1( [&]{ eggs1.move_to(eggs1.current_y, bx+14, false, temptick, numticks); });
-    t1.detach();
-    eggs2.move_to(eggs2.current_y, bx+5, false, lasttick, numticks);
-    
-    eggs1.update_contents("");
-    lasttick++;
+      eggs1.move_to(eggs1.current_y, bx+5, false, lasttick, numticks);
+      eggs2.draw(34, 65, lasttick, 1);
+      lasttick++;
+      int temptick = lasttick;
+      std::thread t1( [&]{ eggs1.move_to(eggs1.current_y, bx+14, false, temptick, numticks); });
+      t1.detach();
+      eggs2.move_to(eggs2.current_y, bx+5, false, lasttick, numticks);
+      while(DisplayObject::mc&0x01 && DisplayObject::mc&0x02){
+        eggs1.draw(eggs1.current_y, eggs1.current_x, lasttick);
+        eggs2.draw(eggs2.current_y, eggs2.current_x, lasttick);
+        lasttick++;
+      }
+      
+      eggs1.update_contents("", lasttick);
+      eggs1.flag = true;
 
-    eggs3.draw(34, 65, lasttick, 1);
-    lasttick++;
+      eggs3.draw(34, 65, lasttick, 1);
+      lasttick++;
 
-    temptick = lasttick;
-    std::thread t2( [&]{ eggs2.move_to(eggs2.current_y, bx+14, false, temptick, numticks); });
-    t2.detach();
-    eggs3.move_to(eggs3.current_y, bx+5, false, lasttick, numticks);
-    
-    eggs2.update_contents("");
+      temptick = lasttick;
+      std::thread t2( [&]{ eggs2.move_to(eggs2.current_y, bx+14, false, temptick, numticks); });
+      t2.detach();
+      eggs3.move_to(eggs3.current_y, bx+5, false, lasttick, numticks);
+      while(DisplayObject::mc&0x01 && DisplayObject::mc&0x02){
+        eggs3.draw(eggs3.current_y, eggs3.current_x, lasttick);
+        eggs2.draw(eggs2.current_y, eggs2.current_x, lasttick);
+        lasttick++;
+      }
+      
+      eggs2.update_contents("", lasttick);
+      eggs2.flag = true;
 
-    lasttick++;
-    eggs3.move_to(eggs3.current_y, bx+14, false, lasttick, numticks);
-    eggs3.update_contents("");
-    lasttick++;
-
+      eggs3.move_to(eggs3.current_y, bx+14, false, lasttick, numticks);
+      while(DisplayObject::mc&0x01 && DisplayObject::mc&0x02){
+        eggs3.draw(eggs3.current_y, eggs3.current_x, lasttick);
+        lasttick++;
+      }
+      eggs3.update_contents("", lasttick);
+      eggs3.flag = true;
+    }
+    else{
+      eggs1.draw(eggs1.current_y, eggs1.current_x, lasttick);
+      eggs2.draw(eggs2.current_y, eggs2.current_x, lasttick);
+      eggs3.draw(eggs3.current_y, eggs3.current_x, lasttick);
+      lasttick++;
+    }
   }
   
 }
@@ -301,37 +321,59 @@ void flour_a() {
   int bx = bakery.current_x;
 
   while(true){
-    //if(truck2.current_x == bakery.current_x-13 && truck2.current_y == bakery.current_y+12){
-    flour1.update_contents(flour_str);
-    flour2.update_contents(flour_str);
-    flour3.update_contents(flour_str);
-    flour1.draw(38, 63, lasttick, 1);
-    lasttick++;
+    if(truck2.current_x == bakery.current_x-13 && truck2.current_y == bakery.current_y+8){
+      flour1.update_contents(flour_str, lasttick);
+      flour2.update_contents(flour_str, lasttick);
+      flour3.update_contents(flour_str, lasttick);
+      flour1.draw(38, 63, lasttick, 1);
+      lasttick++;
 
 
-    flour1.move_to(flour1.current_y, bx+3, false, lasttick, numticks);
-    flour2.draw(38, 63, lasttick, 1);
-    lasttick++;
-    int temptick = lasttick;
-    std::thread t1( [&]{ flour1.move_to(flour1.current_y, bx+12, false, temptick, numticks); });
-    t1.detach();
-    flour2.move_to(flour2.current_y, bx+3, false, lasttick, numticks);
-    flour1.update_contents("");
-    lasttick++;
+      flour1.move_to(flour1.current_y, bx+3, false, lasttick, numticks);
+      flour2.draw(38, 63, lasttick, 1);
+      lasttick++;
+      int temptick = lasttick;
+      std::thread t1( [&]{ flour1.move_to(flour1.current_y, bx+12, false, temptick, numticks); });
+      t1.detach();
+      flour2.move_to(flour2.current_y, bx+3, false, lasttick, numticks);
+      while(DisplayObject::mc&0x010 && DisplayObject::mc&0x020){
+        flour1.draw(flour1.current_y, flour1.current_x, lasttick);
+        flour2.draw(flour2.current_y, flour2.current_x, lasttick);
+        lasttick++;
+      }
+      flour1.update_contents("", lasttick);
+      flour1.flag = true;
 
-    flour3.draw(38, 63, lasttick, 1);
-    lasttick++;
+      flour3.draw(38, 63, lasttick, 1);
+      lasttick++;
 
-    temptick = lasttick;
-    std::thread t2( [&]{ flour2.move_to(flour2.current_y, bx+12, false, temptick, numticks); });
-    t2.detach();
-    flour3.move_to(flour3.current_y, bx+3, false, lasttick, numticks);
-    flour2.update_contents("");
-    lasttick++;
-    flour3.move_to(flour3.current_y, bx+12, false, lasttick, numticks);
-    flour3.update_contents("");
-    lasttick++;
-    
+      temptick = lasttick;
+      std::thread t2( [&]{ flour2.move_to(flour2.current_y, bx+12, false, temptick, numticks); });
+      t2.detach();
+      flour3.move_to(flour3.current_y, bx+3, false, lasttick, numticks);
+      while(DisplayObject::mc&0x010 && DisplayObject::mc&0x020){
+        flour3.draw(flour3.current_y, flour3.current_x, lasttick);
+        flour2.draw(flour2.current_y, flour2.current_x, lasttick);
+        lasttick++;
+      }
+      flour2.update_contents("", lasttick);
+      flour2.flag = true;
+      //lasttick++;
+      flour3.move_to(flour3.current_y, bx+12, false, lasttick, numticks);
+      while(DisplayObject::mc&0x010 && DisplayObject::mc&0x020){
+        flour3.draw(flour3.current_y, flour3.current_x, lasttick);
+        lasttick++;
+      }
+      flour3.update_contents("", lasttick);
+      flour3.flag = true;
+    //lasttick++;
+    }  
+    else{
+      flour1.draw(flour1.current_y, flour1.current_x, lasttick);
+      flour2.draw(flour2.current_y, flour2.current_x, lasttick);
+      flour3.draw(flour3.current_y, flour3.current_x, lasttick);
+      lasttick++;
+    }
   }
 }
 
@@ -344,35 +386,56 @@ void sugar_a() {
   });
   int bx = bakery.current_x;
   while(true){
-    //if(truck2.current_x == bakery.current_x-13 && truck2.current_y == bakery.current_y+16){
-    sugar1.update_contents(sugar_str);
-    sugar2.update_contents(sugar_str);
-    sugar3.update_contents(sugar_str);
-    sugar1.draw(46, 63, lasttick, 1);
-    lasttick++;
+    if(truck2.current_x == bakery.current_x-13 && truck2.current_y == bakery.current_y+16){
+      sugar1.update_contents(sugar_str, lasttick);
+      sugar2.update_contents(sugar_str, lasttick);
+      sugar3.update_contents(sugar_str, lasttick);
+      sugar1.draw(46, 63, lasttick, 1);
+      lasttick++;
 
-    sugar1.move_to(sugar1.current_y, bx+3, false, lasttick, numticks);
-    sugar2.draw(46, 63, lasttick, 1);
-    lasttick++;
-    int temptick = lasttick;
-    std::thread t1( [&]{ sugar1.move_to(sugar1.current_y, bx+12, false, temptick, numticks); });
-    t1.detach();
-    sugar2.move_to(sugar2.current_y, bx+3, false, lasttick, numticks);
-    sugar1.update_contents("");
-    lasttick++;
+      sugar1.move_to(sugar1.current_y, bx+3, false, lasttick, numticks);
+      sugar2.draw(46, 63, lasttick, 1);
+      lasttick++;
+      int temptick = lasttick;
+      std::thread t1( [&]{ sugar1.move_to(sugar1.current_y, bx+12, false, temptick, numticks); });
+      t1.detach();
+      sugar2.move_to(sugar2.current_y, bx+3, false, lasttick, numticks);
+      while(DisplayObject::mc&0x040 && DisplayObject::mc&0x080){
+        sugar1.draw(sugar1.current_y, sugar1.current_x, lasttick);
+        sugar2.draw(sugar2.current_y, sugar2.current_x, lasttick);
+        lasttick++;
+      }
+      sugar1.update_contents("", lasttick);
+      sugar1.flag = true;
 
-    sugar3.draw(46, 63, lasttick, 1);
-    lasttick++;
+      sugar3.draw(46, 63, lasttick, 1);
+      lasttick++;
 
-    temptick = lasttick;
-    std::thread t2( [&]{ sugar2.move_to(sugar2.current_y, bx+12, false, temptick, numticks); });
-    t2.detach();
-    sugar3.move_to(sugar3.current_y, bx+3, false, lasttick, numticks);
-    sugar2.update_contents("");
-    lasttick++;
-    sugar3.move_to(sugar3.current_y, bx+12, false, lasttick, numticks);
-    sugar3.update_contents("");
-    lasttick++;
+      temptick = lasttick;
+      std::thread t2( [&]{ sugar2.move_to(sugar2.current_y, bx+12, false, temptick, numticks); });
+      t2.detach();
+      sugar3.move_to(sugar3.current_y, bx+3, false, lasttick, numticks);
+      while(DisplayObject::mc&0x040 && DisplayObject::mc&0x080){
+        sugar3.draw(sugar3.current_y, sugar3.current_x, lasttick);
+        sugar2.draw(sugar2.current_y, sugar2.current_x, lasttick);
+        lasttick++;
+      }
+      sugar2.update_contents("", lasttick);
+      sugar2.flag = true;
+      sugar3.move_to(sugar3.current_y, bx+12, false, lasttick, numticks);
+      while(DisplayObject::mc&0x040 && DisplayObject::mc&0x080){
+        sugar3.draw(sugar3.current_y, sugar3.current_x, lasttick);
+        lasttick++;
+      }
+      sugar3.update_contents("", lasttick);
+      sugar3.flag = true;
+    }  
+    else{
+      sugar1.draw(sugar1.current_y, sugar1.current_x, lasttick);
+      sugar2.draw(sugar2.current_y, sugar2.current_x, lasttick);
+      sugar3.draw(sugar3.current_y, sugar3.current_x, lasttick);
+      lasttick++;
+    }
   }
 }
 
@@ -385,35 +448,56 @@ void butter_a() {
   });
   int bx = bakery.current_x;
   while(true){
-    //if(truck1.current_x == bakery.current_x-13 && truck1.current_y == bakery.current_y+8){
-    butter1.update_contents(butter_str);
-    butter2.update_contents(butter_str);
-    butter3.update_contents(butter_str);
-    butter1.draw(42, 62, lasttick, 1);
-    lasttick++;
+    if(truck1.current_x == bakery.current_x-13 && truck1.current_y == bakery.current_y+12){
+      butter1.update_contents(butter_str, lasttick);
+      butter2.update_contents(butter_str, lasttick);
+      butter3.update_contents(butter_str, lasttick);
+      butter1.draw(42, 62, lasttick, 1);
+      lasttick++;
 
-    butter1.move_to(butter1.current_y, bx+2, false, lasttick, numticks);
-    butter2.draw(42, 62, lasttick, 1);
-    lasttick++;
-    int temptick = lasttick;
-    std::thread t1( [&]{ butter1.move_to(butter1.current_y, bx+11, false, temptick, numticks); });
-    t1.detach();
-    butter2.move_to(butter2.current_y, bx+2, false, lasttick, numticks);
-    butter1.update_contents("");
-    lasttick++;
+      butter1.move_to(butter1.current_y, bx+2, false, lasttick, numticks);
+      butter2.draw(42, 62, lasttick, 1);
+      lasttick++;
+      int temptick = lasttick;
+      std::thread t1( [&]{ butter1.move_to(butter1.current_y, bx+11, false, temptick, numticks); });
+      t1.detach();
+      butter2.move_to(butter2.current_y, bx+2, false, lasttick, numticks);
+      while(DisplayObject::mc&0x04 && DisplayObject::mc&0x08){
+        butter1.draw(butter1.current_y, butter1.current_x, lasttick);
+        butter2.draw(butter2.current_y, butter2.current_x, lasttick);
+        lasttick++;
+      }
+      butter1.update_contents("", lasttick);
+      butter1.flag = true;
 
-    butter3.draw(42, 62, lasttick, 1);
-    lasttick++;
+      butter3.draw(42, 62, lasttick, 1);
+      lasttick++;
 
-    temptick = lasttick;
-    std::thread t2( [&]{ butter2.move_to(butter2.current_y, bx+11, false, temptick, numticks); });
-    t2.detach();
-    butter3.move_to(butter3.current_y, bx+2, false, lasttick, numticks);
-    butter2.update_contents("");
-    lasttick++;
-    butter3.move_to(butter3.current_y, bx+11, false, lasttick, numticks);
-    butter3.update_contents("");
-    lasttick++;
+      temptick = lasttick;
+      std::thread t2( [&]{ butter2.move_to(butter2.current_y, bx+11, false, temptick, numticks); });
+      t2.detach();
+      butter3.move_to(butter3.current_y, bx+2, false, lasttick, numticks);
+      while(DisplayObject::mc&0x04 && DisplayObject::mc&0x08){
+        butter2.draw(butter2.current_y, butter2.current_x, lasttick);
+        butter3.draw(butter3.current_y, butter3.current_x, lasttick);
+        lasttick++;
+      }
+      butter2.update_contents("", lasttick);
+      butter2.flag = true;
+      butter3.move_to(butter3.current_y, bx+11, false, lasttick, numticks);
+      while(DisplayObject::mc&0x04 && DisplayObject::mc&0x08){
+        butter3.draw(butter3.current_y, butter3.current_x, lasttick);
+        lasttick++;
+      };
+      butter3.update_contents("", lasttick);
+      butter3.flag = true;
+    }  
+    else{
+      butter1.draw(butter1.current_y, butter1.current_x, lasttick);
+      butter2.draw(butter2.current_y, butter2.current_x, lasttick);
+      butter3.draw(butter3.current_y, butter3.current_x, lasttick);
+      lasttick++;
+    }
   }
 }
 
@@ -665,107 +749,123 @@ void chicken_2a() {
 void oven_a(int lasttick){
   int numticks = 4;
   for(int i = 0; i < 2; i++){
-  std::unique_lock guard(DisplayObject::cake_mtx);
-  DisplayObject::not_full.wait(guard, [&]() { return DisplayObject::nfree != 0;});
-  if(i == 0){
-    batter1.draw(39, 94, lasttick, numticks);
-    lasttick+=numticks;
-    batter1.draw(batter1.current_y, batter1.current_x, lasttick, numticks * 5);
-    lasttick+=numticks*5;
-    batter1.update_contents("");
-  }
-  if(i == 1){
-    batter2.draw(39, 94, lasttick, numticks);
-    lasttick+=numticks;
-    batter2.draw(batter1.current_y, batter1.current_x, lasttick, numticks * 5);
-    lasttick+=numticks*5;
-    batter2.update_contents("");
-  }
-  DisplayObject::nfree-=3;
-  if(DisplayObject::nfree < 0) DisplayObject::nfree = 0;
-  DisplayObject::nfull += 3;
-  if(DisplayObject::nfull > 6) DisplayObject::nfull = 6;
-  DisplayObject::not_enough.notify_one();
+    std::unique_lock guard(DisplayObject::cake_mtx);
+    DisplayObject::not_full.wait(guard, [&]() { return DisplayObject::nfree != 0;});
+    if(i == 0){
+      batter1.draw(39, 94, lasttick, numticks);
+      lasttick+=numticks;
+      batter1.draw(batter1.current_y, batter1.current_x, lasttick, numticks * 5);
+      lasttick+=numticks*5;
+      batter1.update_contents("", lasttick);
+    }
+    if(i == 1){
+      batter2.draw(39, 94, lasttick, numticks);
+      lasttick+=numticks;
+      batter2.draw(batter1.current_y, batter1.current_x, lasttick, numticks * 5);
+      lasttick+=numticks*5;
+      batter2.update_contents("", lasttick);
+    }
+    DisplayObject::nfree-=3;
+    if(DisplayObject::nfree < 0) DisplayObject::nfree = 0;
+    DisplayObject::nfull += 3;
+    if(DisplayObject::nfull > 6) DisplayObject::nfull = 6;
+    DisplayObject::not_enough.notify_one();
   }
 }
 
 void mixer_a() {
   int lasttick = 0, numticks = 4;
-	std::string mixer_string;
+	std::string mixer_string = "";
 	DisplayObject mixer_contents(mixer_string, 3);
-  int mc = 0;
-	while(true)
-	{
-		if(mc == 0xFF)
-		{	
-			mc = 0;
+  mixer_contents.draw(47, 92, lasttick, 1);
+  lasttick++;
+	while(true) {
+		if(DisplayObject::mc == 0xFF) {	
       mixer_string = "";
-			mixer_contents.update_contents(mixer_string);
+			mixer_contents.update_contents(mixer_string, lasttick);
       lasttick++;
 			mixer_contents.draw(47, 92, lasttick, 1);
       lasttick++;
-      batter1.update_contents("[ccc]");
-      batter2.update_contents("[ccc]");
+      batter1.update_contents("[ccc]", lasttick);
+      batter2.update_contents("[ccc]", lasttick);
       lasttick++;
       batter1.draw(47, 92, lasttick, numticks);
       batter2.draw(46, 92, lasttick, numticks);
       lasttick += numticks;
-      std::thread oven_t([&]{ oven_a(lasttick); });
-      oven_t.detach();
-		}
-		else
-		{
-      mixer_string = "";
+      //std::thread oven_t([&]{ oven_a(lasttick); });
+      //oven_t.detach();
+      oven_a(lasttick);
+      DisplayObject::mc = 0;
+      
+		} else {
       //set the elements
-      eggs1.startread();
-      eggs2.startread();
-      eggs3.startread();
-      butter1.startread();
-      butter2.startread();
-      butter3.startread();
-      flour1.startread();
-      flour2.startread();
-      flour3.startread();
-      sugar1.startread();
-      sugar2.startread();
-      sugar3.startread();
-      if(!(mc & 0x1) && (eggs1.current_x == bakery.current_x+13 || eggs2.current_x == bakery.current_x+13 || eggs3.current_x == bakery.current_x+13)) mc = mc | 0x1;
-      else if(eggs1.current_x == bakery.current_x+13 || eggs2.current_x == bakery.current_x+13 || eggs3.current_x == bakery.current_x+13) mc = mc | 0x2;
 
-      if(!(mc & 0x4) && (butter1.current_x == bakery.current_x+10 || butter2.current_x == bakery.current_x+10 || butter3.current_x == bakery.current_x+10)) mc = mc | 0x4;
-      else if(butter1.current_x == bakery.current_x+10 || butter2.current_x == bakery.current_x+10 || butter3.current_x == bakery.current_x+10) mc = mc | 0x8;
+      if(!(DisplayObject::mc & 0x1) && (eggs1.flag || eggs2.flag || eggs3.flag)){ 
+        DisplayObject::mc = DisplayObject::mc | 0x1;
+        eggs1.flag = false; 
+        eggs2.flag = false;
+        eggs3.flag = false;
+      }
+      else if(eggs1.flag || eggs2.flag || eggs3.flag) {
+        DisplayObject::mc = DisplayObject::mc | 0x2;
+        eggs1.flag = false; 
+        eggs2.flag = false;
+        eggs3.flag = false;
+      }
 
-      if(!(mc & 0x10) && (flour1.current_x == bakery.current_x+11 || flour2.current_x == bakery.current_x+11 || flour3.current_x == bakery.current_x+11)) mc = mc | 0x10;
-      else if(flour1.current_x == bakery.current_x+11 || flour2.current_x == bakery.current_x+11 || flour3.current_x == bakery.current_x+11) mc = mc | 0x20;
+      if(!(DisplayObject::mc & 0x4) && (butter1.flag || butter2.flag || butter3.flag)){ 
+        DisplayObject::mc = DisplayObject::mc | 0x4;
+        butter1.flag = false; 
+        butter2.flag = false;
+        butter3.flag = false;
+      }
+      else if(butter1.flag || butter2.flag || butter3.flag) {
+        DisplayObject::mc = DisplayObject::mc | 0x8;
+        butter1.flag = false; 
+        butter2.flag = false;
+        butter3.flag = false;
+      }
 
-      if(!(mc & 0x40) && (sugar1.current_x == bakery.current_x+11 || sugar2.current_x == bakery.current_x+11 || sugar3.current_x == bakery.current_x+11)) mc = mc | 0x40;
-      else if(sugar1.current_x == bakery.current_x+11 || sugar2.current_x == bakery.current_x+11 || sugar3.current_x == bakery.current_x+11) mc = mc | 0x80;
-      mixer_string = (mc & 0x01)? "E": " ";
-			mixer_string +=(mc & 0x02)? "E": " ";
-			mixer_string += (mc & 0x04)? "B": " ";
-			mixer_string += (mc & 0x08)? "B": " ";
+      if(!(DisplayObject::mc & 0x10) && (flour1.flag || flour2.flag || flour3.flag)){ 
+        DisplayObject::mc = DisplayObject::mc | 0x10;
+        flour1.flag = false; 
+        flour2.flag = false;
+        flour3.flag = false;
+      }
+      else if(flour1.flag || flour2.flag || flour3.flag) {
+        DisplayObject::mc = DisplayObject::mc | 0x20;
+        flour1.flag = false; 
+        flour2.flag = false;
+        flour3.flag = false;
+      }
+
+      if(!(DisplayObject::mc & 0x40) && (sugar1.flag || sugar2.flag || sugar3.flag)){ 
+        DisplayObject::mc = DisplayObject::mc | 0x40;
+        sugar1.flag = false; 
+        sugar2.flag = false;
+        sugar3.flag = false;
+      }
+      else if(sugar1.flag || sugar2.flag || sugar3.flag) {
+        DisplayObject::mc = DisplayObject::mc | 0x80;
+        sugar1.flag = false; 
+        sugar2.flag = false;
+        sugar3.flag = false;
+      }
+
+      mixer_string = (DisplayObject::mc & 0x01)? "E": " ";
+			mixer_string +=(DisplayObject::mc & 0x02)? "E": " ";
+			mixer_string += (DisplayObject::mc & 0x04)? "B": " ";
+			mixer_string += (DisplayObject::mc & 0x08)? "B": " ";
 			mixer_string += "#";
-			mixer_string += (mc & 0x10)? "F": " ";
-			mixer_string += (mc & 0x20)? "F": " ";
-			mixer_string += (mc & 0x40)? "S": " ";
-			mixer_string += (mc & 0x80)? "S": " ";
-      eggs1.endread();
-      eggs2.endread();
-      eggs3.endread();
-      butter1.endread();
-      butter2.endread();
-      butter3.endread();
-      flour1.endread();
-      flour2.endread();
-      flour3.endread();
-      sugar1.endread();
-      sugar2.endread();
-      sugar3.endread();
+			mixer_string += (DisplayObject::mc & 0x10)? "F": " ";
+			mixer_string += (DisplayObject::mc & 0x20)? "F": " ";
+			mixer_string += (DisplayObject::mc & 0x40)? "S": " ";
+			mixer_string += (DisplayObject::mc & 0x80)? "S": " ";
 
-      mixer_contents.update_contents(mixer_string);
-      lasttick++;
+      mixer_contents.update_contents(mixer_string, lasttick);
+      //lasttick++;
       mixer_contents.draw(47, 92, lasttick, 1);
-      lasttick+= 1;
+      lasttick++;
     }
     mixer_contents.draw(47, 92, lasttick, numticks);
     lasttick+= numticks;
@@ -789,6 +889,7 @@ void child_a(DisplayObject &c, int num) {
   if(num == 3) c.draw(36, 130);
   if(num == 4) c.draw(40, 125);
   if(num == 5) c.draw(44, 120);
+  //lasttick++;
   int xo = c.current_x, yo = c.current_y;
   int cakes = 1;
   while(true){
@@ -798,13 +899,12 @@ void child_a(DisplayObject &c, int num) {
       std::unique_lock cake_guard(DisplayObject::cake_mtx);
       cakes = std::rand() % 5 + 1;
       DisplayObject::not_enough.wait(cake_guard, [&](){ return DisplayObject::nfull >= cakes; });
+      lasttick = DisplayObject::gettick();
       c.draw(c.current_y, c.current_x, lasttick, numticks);
-      lasttick+= numticks;
-      DisplayObject::nfree += DisplayObject::nfull;
+      lasttick += numticks;
+      DisplayObject::nfree += cakes;
       DisplayObject::nfull -= cakes;
       DisplayObject::not_full.notify_all();
-      c.draw(c.current_y, c.current_x, lasttick, numticks);
-      lasttick+= numticks;
       c.move_to(yo, xo, false, lasttick, 1);
       DisplayObject::who = std::rand() % 5 + 1;
     }
@@ -817,22 +917,24 @@ int main(int argc, char** argv)
 {	
   srand(std::time(0));
   DisplayObject::who = std::rand() % 5 + 1;
-  std::thread consts_t( [&]() { 
+  std::thread consts_t( [&]() {
+    int lasttick = 0;
     std::unique_lock(egg_barn.cpos);
-    egg_barn.draw(30,30);
+    egg_barn.draw(30,30, lasttick);
     egg_barn.wait_cpos.notify_all();
 
     std::unique_lock(sugar_barn.cpos);
-    sugar_barn.draw(42,30);
+    sugar_barn.draw(42,30, lasttick);
     sugar_barn.wait_cpos.notify_all();
 
     std::unique_lock(bakery.cpos);
-    bakery.draw(30, 70);
+    bakery.draw(30, 70, lasttick);
     bakery.wait_cpos.notify_all();
 
     std::unique_lock(cow.cpos);
-    cow.draw(26, 63);
+    cow.draw(26, 63, lasttick);
     cow.wait_cpos.notify_all();
+    lasttick++;
   });
   std::thread farmer_t(farmer_a);
   std::thread truck1_t(truck1_a);

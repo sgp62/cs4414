@@ -14,6 +14,7 @@ public:
 	int  readers;
 	int  writers_waiting;
 	bool myturn;
+	std::atomic_bool flag;
 	std::string image;
 	std::shared_mutex cpos;
 	std::condition_variable_any wait_cpos;
@@ -21,7 +22,7 @@ public:
 	DisplayObject(const std::string&, const int);
 	DisplayObject(const DisplayObject&);
 	~DisplayObject();
-	void update_contents(const std::string&);
+	void update_contents(const std::string&, int&);
 	void draw(int, int, int lasttick = -1, int numticks = 1);
 	static void redisplay();
 	void move_to(int, int, bool, int&, int, DisplayObject& = def);
@@ -30,6 +31,7 @@ public:
 	void startread();
 	void endread();
 	void checkcollision(DisplayObject&, int&, int);
+	static int gettick();
 	static std::mutex child_mtx;
 	static std::condition_variable child_wait;
 	static std::mutex cake_mtx;
@@ -38,6 +40,7 @@ public:
 	static std::atomic_int nfree;
 	static std::atomic_int nfull;
 	static std::atomic_int who;
+	static std::atomic_int mc;
 
 
 private:
