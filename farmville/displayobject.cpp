@@ -19,6 +19,7 @@ std::condition_variable_any DisplayObject::not_full;
 std::atomic_int DisplayObject::nfree = 6;
 std::atomic_int DisplayObject::nfull = 0;
 std::atomic_int DisplayObject::mc = 0;
+std::atomic_int DisplayObject::eggs = 0;
 
 std::condition_variable_any DisplayObject::want_rw;
 int active_readers, writers_waiting;

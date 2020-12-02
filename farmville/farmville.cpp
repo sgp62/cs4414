@@ -234,9 +234,9 @@ void redisplay()
 {
         DisplayObject::redisplay();
 	std::cout << "Eggs: Laid=" << eggs_laid << ", Used=" << eggs_used << 
-                     " Butter: Sold=" << butter_produced << ", Used=" << butter_used <<
-                     " Sugar: Sold=" << sugar_produced << ", Used=" << sugar_used <<
-                     " Flour: Sold=" << flour_produced << ", Used=" << flour_used << 
+                     " Butter: Produced=" << butter_produced << ", Used=" << butter_used <<
+                     " Sugar: Produced=" << sugar_produced << ", Used=" << sugar_used <<
+                     " Flour: Produced=" << flour_produced << ", Used=" << flour_used << 
                      " Cakes: Baked=" << cakes_produced << ", Sold=" << cakes_sold << std::endl;
 }
 
@@ -502,7 +502,7 @@ void butter_a() {
 }
 
 void farmer_a() {
-  int numticks = 2, lasttick = 0;
+  int numticks = 2, lasttick = 0, eggs_held = 0;
   farmer.draw(30, 24, lasttick, 1);
   lasttick += 1;
   std::shared_lock readpos_lock(egg_barn.cpos);
@@ -515,22 +515,33 @@ void farmer_a() {
       lasttick += numticks*10;
 
       farmer.move_to(nest1[0].current_y+2, nest1[0].current_x, false, lasttick, numticks);
-      farmer.draw(farmer.current_y, farmer.current_x, lasttick, numticks*5);
-      lasttick += numticks*5;
+      if(nest1[3].current_x == farmer.current_x){
+        farmer.draw(farmer.current_y, farmer.current_x, lasttick, numticks*5);
+        lasttick += numticks*5;
+        eggs_held += 3;
+      }
 
       farmer.move_to(farmer.current_y, nest2[0].current_x, false, lasttick, numticks);
-      farmer.draw(farmer.current_y, farmer.current_x, lasttick, numticks*5);
-      lasttick += numticks*5;
+      if(nest2[3].current_x == farmer.current_x){
+        farmer.draw(farmer.current_y, farmer.current_x, lasttick, numticks*5);
+        lasttick += numticks*5;
+        eggs_held += 3;
+      }
 
       farmer.move_to(farmer.current_y, nest3[0].current_x+3, false, lasttick, numticks);
+      if(nest3[3].current_x == farmer.current_x){
+        farmer.draw(farmer.current_y, farmer.current_x, lasttick, numticks*5);
+        lasttick += numticks*5;
+        eggs_held += 3;
+      }
+
+      farmer.move_to(cow.current_y, farmer.current_x, false, lasttick, numticks);
       farmer.draw(farmer.current_y, farmer.current_x, lasttick, numticks*5);
       lasttick += numticks*5;
 
-      farmer.move_to(cow.current_y, farmer.current_x, false, lasttick, numticks);
-      farmer.draw(farmer.current_y, farmer.current_x, lasttick, numticks*25);
-      lasttick += numticks*25;
-
       farmer.move_to(egg_barn.current_y, egg_barn.current_x-3, false, lasttick, numticks);
+      DisplayObject::eggs += eggs_held;
+      eggs_held = 0;
     }
   }
 }
@@ -547,14 +558,17 @@ void truck1_a() {
   });
   while(true){
     if(truck1.current_x == egg_barn.current_x){
-      truck1.draw(truck1.current_y, truck1.current_x, lasttick, numticks * 15);
-      lasttick+= numticks*15;
       if(from == "start" || from == "butter"){
+        while(DisplayObject::eggs < 9){
+          truck1.draw(truck1.current_y, truck1.current_x, lasttick);
+          lasttick++;
+        }
         from = "eggs";
         truck1.move_to(truck1.current_y, bakery.current_x-13, false, lasttick, numticks);
       }
       else if(from == "eggs"){
         from = "butter";
+        butter_produced+=3;
         truck1.move_to(bakery.current_y+12, bakery.current_x-28, false, lasttick, numticks, truck2, 0, 8);
         truck1.move_to(truck1.current_y, bakery.current_x-13, true, lasttick, numticks);
       }
@@ -598,10 +612,12 @@ void truck2_a() {
       lasttick+= numticks*15;
       if(from == "start" || from == "flour"){
         from = "sugar";
+        sugar_produced+=3;
         truck2.move_to(truck2.current_y, bakery.current_x-13, false, lasttick, numticks);
       }
       else if(from == "sugar"){
         from = "flour";
+        flour_produced+=3;
         truck2.move_to(bakery.current_y+8, bakery.current_x-28, false, lasttick, numticks, truck1, 0, 8);
         truck2.move_to(truck2.current_y, bakery.current_x-13, false, lasttick, numticks);
       }
@@ -639,11 +655,14 @@ void nest_1a() {
       if(count < 3){
         nest1[++count].draw(22, 15, lasttick, numticks);
         lasttick += numticks;
+        eggs_laid++;
       }
       if(count >= 3) count = 3;
     }
     else if(count == 3 && farmer.current_x == nest1[0].current_x && farmer.current_y == nest1[0].current_y+2){
       nest1[0].draw(22, 15, lasttick, numticks);
+      nest1[3].current_x = 0;
+      nest1[3].current_y = 0;
       lasttick += numticks;
       count = 0;
     }
@@ -672,11 +691,14 @@ void nest_2a() {
       if(count < 3){
         nest2[++count].draw(22, 35, lasttick, numticks);
         lasttick += numticks;
+        eggs_laid++;
       }
       if(count >= 3) count = 3;
     }
     else if(count == 3 && fx == nest2[0].current_x && fy == nest2[0].current_y+2){
       nest2[0].draw(22, 35, lasttick, numticks);
+      nest2[3].current_x = 0;
+      nest2[3].current_y = 0;
       count = 0;
       lasttick += numticks;
     }
@@ -699,11 +721,14 @@ void nest_3a() {
       if(count < 3){
         nest3[++count].draw(22, 55, lasttick, numticks);
         lasttick += numticks;
+        eggs_laid++;
       }
       if(count >= 3) count = 3;
     }
     else if(count == 3 && farmer.current_x == nest3[0].current_x+3 && farmer.current_y == nest3[0].current_y+2){
       nest3[0].draw(22, 55, lasttick, numticks);
+      nest3[3].current_x = 0;
+      nest3[3].current_y = 0;
       count = 0;
       lasttick += numticks;
     }
@@ -791,8 +816,10 @@ void oven_a(int lasttick){
     }
     DisplayObject::nfree-=3;
     if(DisplayObject::nfree < 0) DisplayObject::nfree = 0;
+    int tempfull = DisplayObject::nfull;
     DisplayObject::nfull += 3;
     if(DisplayObject::nfull > 6) DisplayObject::nfull = 6;
+    cakes_produced += DisplayObject::nfull - tempfull;
     DisplayObject::not_enough.notify_one();
   }
 }
@@ -826,12 +853,14 @@ void mixer_a() {
 
       if(!(DisplayObject::mc & 0x1) && (eggs1.flag || eggs2.flag || eggs3.flag)){ 
         DisplayObject::mc = DisplayObject::mc | 0x1;
+        eggs_used++;
         eggs1.flag = false; 
         eggs2.flag = false;
         eggs3.flag = false;
       }
       else if(eggs1.flag || eggs2.flag || eggs3.flag) {
         DisplayObject::mc = DisplayObject::mc | 0x2;
+        eggs_used++;
         eggs1.flag = false; 
         eggs2.flag = false;
         eggs3.flag = false;
@@ -839,12 +868,14 @@ void mixer_a() {
 
       if(!(DisplayObject::mc & 0x4) && (butter1.flag || butter2.flag || butter3.flag)){ 
         DisplayObject::mc = DisplayObject::mc | 0x4;
+        butter_used++;
         butter1.flag = false; 
         butter2.flag = false;
         butter3.flag = false;
       }
       else if(butter1.flag || butter2.flag || butter3.flag) {
         DisplayObject::mc = DisplayObject::mc | 0x8;
+        butter_used++;
         butter1.flag = false; 
         butter2.flag = false;
         butter3.flag = false;
@@ -852,12 +883,14 @@ void mixer_a() {
 
       if(!(DisplayObject::mc & 0x10) && (flour1.flag || flour2.flag || flour3.flag)){ 
         DisplayObject::mc = DisplayObject::mc | 0x10;
+        flour_used++;
         flour1.flag = false; 
         flour2.flag = false;
         flour3.flag = false;
       }
       else if(flour1.flag || flour2.flag || flour3.flag) {
         DisplayObject::mc = DisplayObject::mc | 0x20;
+        flour_used++;
         flour1.flag = false; 
         flour2.flag = false;
         flour3.flag = false;
@@ -865,12 +898,14 @@ void mixer_a() {
 
       if(!(DisplayObject::mc & 0x40) && (sugar1.flag || sugar2.flag || sugar3.flag)){ 
         DisplayObject::mc = DisplayObject::mc | 0x40;
+        sugar_used++;
         sugar1.flag = false; 
         sugar2.flag = false;
         sugar3.flag = false;
       }
       else if(sugar1.flag || sugar2.flag || sugar3.flag) {
         DisplayObject::mc = DisplayObject::mc | 0x80;
+        sugar_used++;
         sugar1.flag = false; 
         sugar2.flag = false;
         sugar3.flag = false;
@@ -926,6 +961,7 @@ void child_a(DisplayObject &c, int num) {
       lasttick = DisplayObject::gettick();
       c.draw(c.current_y, c.current_x, lasttick, numticks);
       lasttick += numticks;
+      cakes_sold += cakes;
       DisplayObject::nfree += cakes;
       DisplayObject::nfull -= cakes;
       DisplayObject::not_full.notify_all();

@@ -41,6 +41,7 @@ public:
 	static std::atomic_int nfull;
 	static std::atomic_int who;
 	static std::atomic_int mc;
+	static std::atomic_int eggs;
 
 
 private:
