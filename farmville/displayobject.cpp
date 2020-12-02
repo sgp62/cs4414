@@ -85,7 +85,7 @@ void DisplayObject::update_contents(const std::string& str, int& lasttick)
 		current_y = 0;
 	}
 	image = str;
-	if(current_x > 0 && current_y > 0)
+	if(current_x > 0 && current_y > 0)//This is useless and never executed
 	{
 		std::cout << "Actually in the draw section" << std::endl;
 		draw(x, y, lasttick);
@@ -215,9 +215,9 @@ int DisplayObject::gettick(){
 
 
 
-void DisplayObject::checkcollision(DisplayObject &opp, int& lt, int nt){
+void DisplayObject::checkcollision(DisplayObject &opp, int& lt, int nt, int bufferx, int buffery){
 	//opp.startread();
-	if((abs(current_x - opp.current_x) <= width+3) && (abs(current_y - opp.current_y) <= height+3)){
+	if((abs(current_x - opp.current_x) <= width+bufferx) && (abs(current_y - opp.current_y) <= height+buffery)){
 		if(!myturn){
 			while(true){
 				//std::cout << "waiting" << std::endl;
@@ -226,13 +226,14 @@ void DisplayObject::checkcollision(DisplayObject &opp, int& lt, int nt){
 				lt+= nt;
 				endwrite();
 				opp.startread();
-				if((abs(current_x - opp.current_x) > (width+3)) || (abs(current_y - opp.current_y) > (height+3))) {
+				//std::cout << abs(current_x-opp.current_x) << std::endl;
+				//std::cout << width << std::endl;
+				if((abs(current_x - opp.current_x) > (width+bufferx)) || (abs(current_y - opp.current_y) > (height+buffery))) {
 					opp.endread();
 					break;
 				}
 				opp.endread();
 			}
-			//myturn = 1;
 		}
 	}
 	//opp.endread();
@@ -243,11 +244,11 @@ void DisplayObject::endread(){
 	if(--readers == 0) wait_cpos.notify_all();
 }
 
-void DisplayObject::move_to(int dy, int dx, bool yfirst, int &lt, int nt, DisplayObject& opp){
+void DisplayObject::move_to(int dy, int dx, bool yfirst, int &lt, int nt, DisplayObject& opp, int bufferx, int buffery){
   if(yfirst) {
 		if(current_y > dy){
 			do{
-				checkcollision(opp, lt, nt);
+				checkcollision(opp, lt, nt, bufferx, buffery);
 				startwrite();
 				draw(current_y-1, current_x, lt, nt);
 				lt+= nt;
@@ -257,7 +258,7 @@ void DisplayObject::move_to(int dy, int dx, bool yfirst, int &lt, int nt, Displa
 		}
 		else if (current_y < dy) {
 			do{
-				checkcollision(opp, lt, nt);
+				checkcollision(opp, lt, nt, bufferx, buffery);
 				startwrite();
 				draw(current_y+1, current_x, lt, nt);
 				lt+= nt;
@@ -269,7 +270,7 @@ void DisplayObject::move_to(int dy, int dx, bool yfirst, int &lt, int nt, Displa
 
 	if(current_x > dx){
 		do{
-			checkcollision(opp, lt, nt);
+			checkcollision(opp, lt, nt, bufferx, buffery);
 			startwrite();
 			draw(current_y, current_x-1, lt, nt);
 			lt+= nt;
@@ -279,7 +280,7 @@ void DisplayObject::move_to(int dy, int dx, bool yfirst, int &lt, int nt, Displa
 	}
 	else if (current_x < dx) {
 		do{
-			checkcollision(opp, lt, nt);
+			checkcollision(opp, lt, nt, bufferx, buffery);
 			startwrite();
 			draw(current_y, current_x+1, lt, nt);
 			lt+= nt;
@@ -291,7 +292,7 @@ void DisplayObject::move_to(int dy, int dx, bool yfirst, int &lt, int nt, Displa
   if (!yfirst){
     if(current_y > dy){
     	do{
-				checkcollision(opp, lt, nt);
+				checkcollision(opp, lt, nt, bufferx, buffery);
 				startwrite();
       	draw(current_y-1, current_x, lt, nt);
       	lt+= nt;
@@ -301,7 +302,7 @@ void DisplayObject::move_to(int dy, int dx, bool yfirst, int &lt, int nt, Displa
     }
     else if (current_y < dy) {
     	do{
-				checkcollision(opp, lt, nt);
+				checkcollision(opp, lt, nt, bufferx, buffery);
 				startwrite();
       	draw(current_y+1, current_x, lt, nt);
       	lt+= nt;

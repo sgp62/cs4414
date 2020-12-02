@@ -25,12 +25,12 @@ public:
 	void update_contents(const std::string&, int&);
 	void draw(int, int, int lasttick = -1, int numticks = 1);
 	static void redisplay();
-	void move_to(int, int, bool, int&, int, DisplayObject& = def);
+	void move_to(int, int, bool, int&, int, DisplayObject& = def, int = 0, int = 0);
 	void startwrite();
 	void endwrite();
 	void startread();
 	void endread();
-	void checkcollision(DisplayObject&, int&, int);
+	void checkcollision(DisplayObject&, int&, int, int, int);
 	static int gettick();
 	static std::mutex child_mtx;
 	static std::condition_variable child_wait;

@@ -503,7 +503,7 @@ void butter_a() {
 
 void farmer_a() {
   int numticks = 2, lasttick = 0;
-  farmer.draw(30, 27, lasttick, 1);
+  farmer.draw(30, 24, lasttick, 1);
   lasttick += 1;
   std::shared_lock readpos_lock(egg_barn.cpos);
   egg_barn.wait_cpos.wait(readpos_lock, [&](){
@@ -536,8 +536,9 @@ void farmer_a() {
 }
 
 void truck1_a() {
+  truck1.myturn = true;
   int lasttick = 0, numticks = 2;
-  truck1.draw(34, 30, lasttick, 1);
+  truck1.draw(34, 27, lasttick, 1);
   lasttick++;
   std::string from = "start";
   std::shared_lock readpos_lock(egg_barn.cpos);
@@ -554,25 +555,37 @@ void truck1_a() {
       }
       else if(from == "eggs"){
         from = "butter";
-        truck1.move_to(bakery.current_y+12, bakery.current_x-25, false, lasttick, numticks);
+        truck1.move_to(bakery.current_y+12, bakery.current_x-28, false, lasttick, numticks, truck2, 0, 8);
         truck1.move_to(truck1.current_y, bakery.current_x-13, true, lasttick, numticks);
       }
     }
     else if(truck1.current_x == bakery.current_x-13){
-      truck1.draw(truck1.current_y, truck1.current_x, lasttick, numticks * 50);
-      lasttick += numticks*50;
+      //truck1.draw(truck1.current_y, truck1.current_x, lasttick, numticks * 50);
+      //lasttick += numticks*50;
       if(from == "butter"){
-        truck1.move_to(egg_barn.current_y+4, bakery.current_x-25, false, lasttick, numticks);
+        while(butter3.current_x != 63){
+          truck1.draw(truck1.current_y, truck1.current_x, lasttick);
+          lasttick++;
+        }
+        truck1.move_to(egg_barn.current_y+4, bakery.current_x-28, false, lasttick, numticks, truck2, 0, 8);
       }
-      truck1.move_to(truck1.current_y, egg_barn.current_x, false, lasttick, numticks);
+      else{
+        while(eggs3.current_x != 66){
+          truck1.draw(truck1.current_y, truck1.current_x, lasttick);
+          lasttick++;
+        }
+      }
+      truck1.move_to(truck1.current_y, egg_barn.current_x, false, lasttick, numticks, truck2, 0, 8);
     }
+    //truck1.myturn = false;
   }
 }
 
 
 void truck2_a() {
+  truck2.myturn = false;
   int lasttick = 0, numticks = 2;
-  truck2.draw(46, 30, lasttick, 1);
+  truck2.draw(46, 27, lasttick, 1);
   lasttick++;
   std::string from = "start";
   std::shared_lock readpos_lock(sugar_barn.cpos);
@@ -589,18 +602,29 @@ void truck2_a() {
       }
       else if(from == "sugar"){
         from = "flour";
-        truck2.move_to(bakery.current_y+8, bakery.current_x-25, false, lasttick, numticks);
+        truck2.move_to(bakery.current_y+8, bakery.current_x-28, false, lasttick, numticks, truck1, 0, 8);
         truck2.move_to(truck2.current_y, bakery.current_x-13, false, lasttick, numticks);
       }
     }
     else if(truck2.current_x == bakery.current_x-13){
-      truck1.draw(truck1.current_y, truck1.current_x, lasttick, numticks * 50);
-      lasttick += numticks*50;
+      //truck1.draw(truck1.current_y, truck1.current_x, lasttick, numticks * 50);
+      //lasttick += numticks*50;
       if(from == "flour"){
-        truck2.move_to(sugar_barn.current_y+4, bakery.current_x-25, false, lasttick, numticks);
+        while(flour3.current_x != 64){
+          truck2.draw(truck2.current_y, truck2.current_x, lasttick);
+          lasttick++;
+        }
+        truck2.move_to(sugar_barn.current_y+4, bakery.current_x-28, false, lasttick, numticks, truck1, 0, 8);
       }
-      truck2.move_to(truck2.current_y, sugar_barn.current_x, false, lasttick, numticks);
+      else{
+        while(sugar3.current_x != 64){
+          truck2.draw(truck2.current_y, truck2.current_x, lasttick);
+          lasttick++;
+        }
+      }
+      truck2.move_to(truck2.current_y, sugar_barn.current_x, false, lasttick, numticks, truck1, 0, 8);
     }
+    //truck2.myturn = true;
   }
 }
 
@@ -707,7 +731,7 @@ void chicken_1a() {
     if(chicken1.current_x == x1){
       chicken1.draw(chicken1.current_y, chicken1.current_x, lasttick, extraticks);
       lasttick += extraticks;
-      chicken1.move_to(chicken1.current_y, x2, false, lasttick, numticks, chicken2);
+      chicken1.move_to(chicken1.current_y, x2, false, lasttick, numticks, chicken2, 3, 3);
     }
     else if(chicken1.current_x == x2){
       chicken1.draw(chicken1.current_y, chicken1.current_x, lasttick, numticks);
@@ -736,7 +760,7 @@ void chicken_2a() {
     if(chicken2.current_x == x3){
       chicken2.draw(chicken2.current_y, chicken2.current_x, lasttick, extraticks);
       lasttick += extraticks ;
-      chicken2.move_to(chicken2.current_y, x2, false, lasttick, numticks, chicken1);
+      chicken2.move_to(chicken2.current_y, x2, false, lasttick, numticks, chicken1, 3, 3);
     }
     else if(chicken2.current_x == x2){
       chicken2.draw(chicken2.current_y, chicken2.current_x, lasttick, numticks);
@@ -920,11 +944,11 @@ int main(int argc, char** argv)
   std::thread consts_t( [&]() {
     int lasttick = 0;
     std::unique_lock(egg_barn.cpos);
-    egg_barn.draw(30,30, lasttick);
+    egg_barn.draw(30,27, lasttick);
     egg_barn.wait_cpos.notify_all();
 
     std::unique_lock(sugar_barn.cpos);
-    sugar_barn.draw(42,30, lasttick);
+    sugar_barn.draw(42,27, lasttick);
     sugar_barn.wait_cpos.notify_all();
 
     std::unique_lock(bakery.cpos);
