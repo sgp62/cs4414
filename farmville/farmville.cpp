@@ -503,7 +503,7 @@ void butter_a() {
 
 void farmer_a() {
   int numticks = 2, lasttick = 0, eggs_held = 0;
-  farmer.draw(30, 24, lasttick, 1);
+  farmer.draw(30, 21, lasttick, 1);
   lasttick += 1;
   std::shared_lock readpos_lock(egg_barn.cpos);
   egg_barn.wait_cpos.wait(readpos_lock, [&](){
@@ -511,7 +511,7 @@ void farmer_a() {
   });
   while(true){
     if(farmer.current_x == egg_barn.current_x-3){
-      farmer.draw(30, 27, lasttick, numticks*10);
+      farmer.draw(30, 21, lasttick, numticks*10);
       lasttick += numticks*10;
 
       farmer.move_to(nest1[0].current_y+2, nest1[0].current_x, false, lasttick, numticks);
@@ -549,7 +549,7 @@ void farmer_a() {
 void truck1_a() {
   truck1.myturn = true;
   int lasttick = 0, numticks = 2;
-  truck1.draw(34, 27, lasttick, 1);
+  truck1.draw(34, 24, lasttick, 1);
   lasttick++;
   std::string from = "start";
   std::shared_lock readpos_lock(egg_barn.cpos);
@@ -581,7 +581,7 @@ void truck1_a() {
           truck1.draw(truck1.current_y, truck1.current_x, lasttick);
           lasttick++;
         }
-        truck1.move_to(egg_barn.current_y+4, bakery.current_x-28, false, lasttick, numticks, truck2, 0, 8);
+        truck1.move_to(egg_barn.current_y+4, bakery.current_x-28, false, lasttick, numticks, truck2, 0, 0);
       }
       else{
         while(eggs3.current_x != 66){
@@ -599,7 +599,7 @@ void truck1_a() {
 void truck2_a() {
   truck2.myturn = false;
   int lasttick = 0, numticks = 2;
-  truck2.draw(46, 27, lasttick, 1);
+  truck2.draw(46, 24, lasttick, 1);
   lasttick++;
   std::string from = "start";
   std::shared_lock readpos_lock(sugar_barn.cpos);
@@ -630,7 +630,7 @@ void truck2_a() {
           truck2.draw(truck2.current_y, truck2.current_x, lasttick);
           lasttick++;
         }
-        truck2.move_to(sugar_barn.current_y+4, bakery.current_x-28, false, lasttick, numticks, truck1, 0, 8);
+        truck2.move_to(sugar_barn.current_y+4, bakery.current_x-28, false, lasttick, numticks, truck1, 0, 0);
       }
       else{
         while(sugar3.current_x != 64){
@@ -980,11 +980,11 @@ int main(int argc, char** argv)
   std::thread consts_t( [&]() {
     int lasttick = 0;
     std::unique_lock(egg_barn.cpos);
-    egg_barn.draw(30,27, lasttick);
+    egg_barn.draw(30,24, lasttick);
     egg_barn.wait_cpos.notify_all();
 
     std::unique_lock(sugar_barn.cpos);
-    sugar_barn.draw(42,27, lasttick);
+    sugar_barn.draw(42,24, lasttick);
     sugar_barn.wait_cpos.notify_all();
 
     std::unique_lock(bakery.cpos);
